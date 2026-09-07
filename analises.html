@@ -1,0 +1,138 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Controle Financeiro — Análises</title><script src="https://cdn.jsdelivr.net/npm/chart.js"></script><style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#182033;--muted:#697386;--line:#e5e7eb;--p:#2563eb;--shadow:0 10px 30px rgba(15,23,42,.08)}*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}.nav{max-width:1180px;margin:auto;padding:15px 22px;display:flex;justify-content:space-between;align-items:center;gap:18px}.brand{font-size:21px;font-weight:900}.brand small{display:block;color:var(--muted);font-size:12px;font-weight:500}.navlinks{display:flex;gap:7px;align-items:center}.btn{padding:11px 15px;border-radius:11px;border:1px solid var(--line);background:#fff;font-weight:800;cursor:pointer}.navlinks .btn{border-color:transparent;background:transparent}.navlinks .btn.active{background:#eef2ff;color:var(--p)}main{max-width:1180px;margin:auto;padding:24px 22px}.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.title{font-size:30px;font-weight:950}.muted{font-size:12px;color:var(--muted)}.back{border:0;background:none;color:var(--p);font-weight:800;cursor:pointer}.filters{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.primary{background:var(--p);color:#fff;border-color:var(--p)}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:0 0 16px}.kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 16px;box-shadow:0 6px 20px rgba(15,23,42,.05)}.kpi .klabel{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}.kpi .kvalue{font-size:20px;font-weight:950;margin-top:7px;white-space:nowrap}.kpi.green .kvalue{color:#15803d}.kpi.blue .kvalue{color:#2563eb}.kpi.orange .kvalue{color:#c2410c}.goal-section{margin-top:16px}.section-title{font-size:20px;font-weight:950;margin-bottom:12px}.goal-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.goal-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}.goal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}.goal-label{font-size:11px;font-weight:850;color:var(--muted);text-transform:uppercase}.goal-main{font-size:25px;font-weight:950;margin-top:5px}.goal-sub{font-size:12px;color:var(--muted);margin-top:4px}.goal-row{display:flex;justify-content:space-between;gap:15px;margin-top:16px;font-size:13px}.progress{height:15px;background:#e9eef7;border-radius:999px;overflow:hidden;margin-top:12px}.progress span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#2563eb,#22c55e)}.goal-status{margin-top:10px;font-weight:900;font-size:13px}.goal-status.ok{color:#15803d}.goal-status.no{color:#b91c1c}.chart{height:560px}.chart canvas{height:470px!important}@media(max-width:900px){.kpis{grid-template-columns:repeat(3,1fr)}.goal-grid{grid-template-columns:1fr}}@media(max-width:650px){main{padding:14px}.title{font-size:24px}.kpis{grid-template-columns:1fr 1fr}.kpi .kvalue{font-size:17px}.chart{height:430px}.chart canvas{height:350px!important}}
+
+/* VISUAL PRO — Análises alinhada ao novo Início */
+:root{--bg:#f4f7fb;--card:#fff;--ink:#17243b;--muted:#6b7a90;--line:#e2e9f2;--p:#1769e8;--shadow:0 8px 26px rgba(22,53,91,.08)}
+body{background:linear-gradient(180deg,#edf4fb 0,#f7f9fc 170px,var(--bg) 100%);color:var(--ink)}
+.app-header{background:linear-gradient(115deg,#0b315b,#123f70);border:0;box-shadow:0 8px 28px rgba(11,49,91,.18);position:sticky;top:0;z-index:30}.app-header .nav{max-width:1180px;padding:17px 22px;min-height:74px}.brand-wrap{display:flex;align-items:center;gap:12px}.brand-mark{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);display:grid;place-items:center;color:#fff;font-size:22px}.app-header .brand{color:#fff;font-size:20px;font-weight:900}.app-header .brand small{color:rgba(255,255,255,.72);font-size:11px}.header-right{display:flex;align-items:center;gap:9px}.head-link,.year-mini{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.1);color:#fff;padding:9px 12px;border-radius:12px;font-weight:800;cursor:pointer}.year-mini{font-size:12px}.head-link:hover{background:rgba(255,255,255,.16)}
+main{max-width:1180px;padding:28px 22px 42px}.head{margin-bottom:20px}.title{font-size:30px;letter-spacing:-.7px}.back{padding:10px 13px;border-radius:10px;background:#fff;border:1px solid var(--line);box-shadow:0 4px 14px rgba(22,53,91,.05)}
+.kpis{gap:14px}.kpi,.panel,.goal-card{border-color:#e0e8f2;box-shadow:0 7px 24px rgba(22,53,91,.07);border-radius:16px}.kpi{padding:17px}.kpi .kvalue{font-size:21px}.filters{gap:8px}.filters .btn{box-shadow:0 3px 10px rgba(22,53,91,.04)}.filters .primary{background:linear-gradient(135deg,#1769e8,#2d7df0);border-color:#1769e8}.panel{padding:20px;background:linear-gradient(135deg,#fff,#fbfdff)}.chart{height:560px}.goal-section{margin-top:18px}.section-title{font-size:19px}.goal-grid{gap:16px}.goal-card{padding:19px}.progress{background:#e8eef5}.progress span{background:linear-gradient(90deg,#1769e8,#39a7f5)}
+@media(max-width:650px){.app-header .nav{padding:13px 14px}.app-header .brand{font-size:17px}.brand-mark{width:36px;height:36px}.head-link{padding:8px 10px}.year-mini{padding:8px 10px}main{padding:18px 14px 30px}.title{font-size:25px}}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="auth.js"></script><style>.project-footer{width:100%;text-align:center;padding:22px 16px 18px;color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:.2px}.project-footer::first-letter{text-transform:lowercase}</style></head><body><script>requireAuth();</script><header class="app-header"><div class="nav"><div class="brand-wrap"><div class="brand-mark">▣</div><div class="brand">Meu Controle Financeiro<small>Organização hoje, tranquilidade amanhã</small></div></div><div class="header-right"><button class="head-link" onclick="window.location.href='index.html'">← Início</button><div class="year-mini">▣ <span id="headerYear">Ano</span></div><button class="btn" onclick="signOut()">Sair</button></div></div></header><main><div class="head"><div><div class="title">Análises</div><div class="muted">Visão geral dos seus dados financeiros.</div></div><button class="back" onclick="window.location.href='index.html'">← Início</button></div><div id="kpis" class="kpis"></div><div id="filters" class="filters"></div><div class="panel chart"><canvas id="chart"></canvas></div><section class="goal-section"><div class="section-title">🎯 Desempenho das metas</div><div id="goalCards" class="goal-grid"></div></section></main><script>
+const months=['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'];
+const initial=Object.fromEntries(months.map(m=>[m,{fixed:[],extra:[],entries:[],debts:[]}]));
+let db=initial;let cloudLoaded=false;
+const DEFAULT_YEAR=2024;
+function getProfile(){return getAppProfile();}
+function activeMonths(){const p=getProfile();if(!p.startDate)return months.slice();const d=new Date(p.startDate+'T00:00:00');if(Number.isNaN(d.getTime())||d.getFullYear()!==Number(p.year))return months.slice();return months.slice(d.getMonth());}
+
+let ch=null;
+const sum=a=>(a||[]).reduce((t,x)=>t+Number(x.value||0),0);
+const money=n=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(n)||0);
+function getGoals(){return getAppGoals();}
+function stat(m){
+  const d=db[m]||{entries:[],fixed:[],extra:[]};
+  const income=sum(d.entries),fixed=sum(d.fixed),extra=sum(d.extra),gastos=fixed+extra;
+  const pagos=sum((d.fixed||[]).filter(x=>x.status==='PAGO'))+sum((d.extra||[]).filter(x=>x.status==='PAGO'));
+  const devendo=sum((d.fixed||[]).filter(x=>x.status==='DEVENDO'))+sum((d.extra||[]).filter(x=>x.status==='DEVENDO'));
+  const lucro=income-pagos;
+  return {income,fixed,extra,gastos,pagos,devendo,lucro,economia:lucro};
+}
+const labels={gastos:'Gastos totais',entradas:'Entradas / salários',pagos:'Gastos pagos',devendo:'Gastos não pagos',lucro:'Lucro / saldo',meta:'🎯 Meta mensal (%)'};
+function renderKpis(){
+  const am=activeMonths(), s=am.map(stat), total=s.reduce((a,x)=>({gastos:a.gastos+x.gastos,pagos:a.pagos+x.pagos,devendo:a.devendo+x.devendo,income:a.income+x.income,lucro:a.lucro+x.lucro}),{gastos:0,pagos:0,devendo:0,income:0,lucro:0});
+  const items=[['1. Gastos totais',total.gastos,''],['2. Gastos pagos',total.pagos,'green'],['3. Gastos não pagos',total.devendo,'orange'],['4. Entradas / salário',total.income,'blue'],['5. Lucro / saldo',total.lucro,total.lucro>=0?'green':'orange']];
+  document.getElementById('kpis').innerHTML=items.map(x=>'<div class="kpi '+x[2]+'"><div class="klabel">'+x[0]+'</div><div class="kvalue">'+money(x[1])+'</div></div>').join('');
+}
+function charts(){
+  const f=document.getElementById('filters');
+  Object.entries(labels).forEach(([k,t])=>{const b=document.createElement('button');b.className='btn';b.textContent=t;b.dataset.type=k;b.onclick=()=>draw(k);f.appendChild(b)});
+  draw('gastos');
+}
+const pointLabelsPlugin={
+  id:'pointLabelsPlugin',
+  afterDatasetsDraw(chart){
+    if(chart.config.type!=='line') return;
+    const ctx=chart.ctx, meta=chart.getDatasetMeta(0), data=chart.data.datasets[0].data||[];
+    ctx.save();
+    ctx.font='700 12px Inter, Segoe UI, Arial, sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='bottom';
+    data.forEach((value,i)=>{
+      const pt=meta.data[i]; if(!pt) return;
+      const n=Number(value)||0;
+      const text=money(n);
+      const color=n>0?'#15803d':n<0?'#dc2626':'#2563eb';
+      const padX=7, padY=4, h=22, w=ctx.measureText(text).width+padX*2;
+      let x=pt.x, y=pt.y-10;
+      if(y-h<2) y=pt.y+30;
+      ctx.fillStyle=n>0?'rgba(220,252,231,.96)':n<0?'rgba(254,226,226,.96)':'rgba(219,234,254,.96)';
+      const left=x-w/2, top=y-h;
+      const r=7;
+      ctx.beginPath();
+      ctx.moveTo(left+r,top);ctx.arcTo(left+w,top,left+w,top+h,r);ctx.arcTo(left+w,top+h,left,top+h,r);ctx.arcTo(left,top+h,left,top,r);ctx.arcTo(left,top,left+w,top,r);ctx.closePath();ctx.fill();
+      ctx.strokeStyle=n>0?'#bbf7d0':n<0?'#fecaca':'#bfdbfe'; ctx.lineWidth=1; ctx.stroke();
+      ctx.fillStyle=color; ctx.fillText(text,x,y-4);
+    });
+    ctx.restore();
+  }
+};
+
+function draw(type){
+  [...document.getElementById('filters').children].forEach(b=>b.classList.toggle('primary',b.dataset.type===type));
+  const am=activeMonths(), s=am.map(stat), g=getGoals();
+  let d=s.map(x=>type==='entradas'?x.income:type==='pagos'?x.pagos:type==='devendo'?x.devendo:type==='lucro'?x.lucro:type==='meta'?(g.monthly>0?(x.economia/g.monthly)*100:0):x.gastos);
+  if(ch)ch.destroy();
+  const isLine=true;
+  const isMeta=type==='meta';
+  const baseColor=type==='entradas'?'#16a34a':type==='devendo'?'#ef4444':isMeta?'#ec4899':'#2563eb';
+  const dataset={
+    label:isMeta?'Meta mensal (%)':labels[type],
+    data:d,
+    borderWidth:3,
+    borderRadius:0,
+    borderSkipped:false,
+    tension:.28,
+    fill:false,
+    backgroundColor:'transparent',
+    borderColor:baseColor,
+    pointRadius:5,
+    pointHoverRadius:7,
+    pointBorderWidth:2,
+    pointBorderColor:'#fff',
+    pointBackgroundColor:baseColor,
+    segment:type==='lucro'?{borderColor:ctx=>{const a=Number(ctx.p0.parsed.y)||0,b=Number(ctx.p1.parsed.y)||0; if(a<0||b<0)return '#ef4444'; if(a>0||b>0)return '#16a34a'; return '#2563eb';}}:undefined
+  };
+  ch=new Chart(document.getElementById('chart'),{
+    type:isLine?'line':'bar',
+    data:{labels:am,datasets:[dataset]},
+    plugins:isLine?[pointLabelsPlugin]:[],
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      layout:{padding:{top:38,right:18,left:8,bottom:8}},
+      plugins:{
+        legend:{display:true,labels:{usePointStyle:true,pointStyle:'line',padding:22,font:{weight:'700'}}},
+        tooltip:{callbacks:{label:c=>isMeta?c.dataset.label+': '+Number(c.raw).toFixed(1).replace('.',',')+'%':c.dataset.label+': '+money(c.raw)}}
+      },
+      scales:{
+        x:{grid:{color:'rgba(148,163,184,.20)'},ticks:{font:{weight:'600'},color:'#47658a'}},
+        y:{beginAtZero:false,ticks:{display:false,callback:v=>isMeta?v+'%':money(v)},suggestedMax:isMeta?120:undefined,grid:{color:'rgba(148,163,184,.20)'}}
+      }
+    }
+  });
+}
+function renderGoals(){
+  const g=getGoals(), am=activeMonths(), s=am.map(stat), annualReal=s.reduce((t,x)=>t+x.economia,0), monthly=g.monthly||0, annual=g.annual||0;
+  const reached=monthly>0?s.filter(x=>x.economia>=monthly).length:0;
+  const avg=am.length?s.reduce((t,x)=>t+x.economia,0)/months.length:0;
+  const pctMonthly=monthly>0?(avg/monthly)*100:0;
+  const pctAnnual=annual>0?(annualReal/annual)*100:0;
+  const annualSafe=Math.max(0,Math.min(100,pctAnnual));
+  const annualMsg=annual>0?(annualReal>=annual?'🟢 META ANUAL ATINGIDA — ultrapassou em '+money(annualReal-annual):'🔴 META ANUAL AINDA NÃO ATINGIDA — faltam '+money(annual-annualReal)):'Defina uma meta anual na página Início.';
+  document.getElementById('goalCards').innerHTML=`
+    <div class="goal-card"><div class="goal-head"><div><div class="goal-label">6. Meta mensal / %</div><div class="goal-main">${money(monthly)}</div><div class="goal-sub">Meta usada para comparar o lucro/saldo de cada mês.</div></div><div class="goal-status ${monthly&&reached>0?'ok':'no'}">${monthly?(reached+' de 12 meses atingidos'):'Meta não definida'}</div></div><div class="goal-row"><span>Média mensal de economia</span><strong>${money(avg)}</strong></div><div class="goal-row"><span>Aproveitamento médio</span><strong>${monthly?pctMonthly.toFixed(1).replace('.',',')+'%':'—'}</strong></div></div>
+    <div class="goal-card"><div class="goal-label">7. Meta anual / %</div><div class="goal-main">${money(annual)}</div><div class="goal-sub">Economia acumulada: <strong>${money(annualReal)}</strong> · ${annual?pctAnnual.toFixed(1).replace('.',',')+'%':'—'}</div><div class="progress"><span style="width:${annualSafe}%"></span></div><div class="goal-status ${annual&&annualReal>=annual?'ok':'no'}">${annualMsg}</div></div>`;
+}
+async function bootCloudAnalyses(){
+  try{
+    const session=await requireAuth();
+    if(!session)return;
+    const p=await loadCloudProfile();
+    const remote=await cloudBoot(initial,p.year);
+    db=remote.data;
+    setAppGoals(remote.goals);
+    cloudLoaded=true; renderKpis();charts();renderGoals();
+  }catch(e){console.error('Cloud boot analyses',e);cloudLoaded=true;renderKpis();charts();renderGoals();}
+}
+bootCloudAnalyses();
+</script><script>(async function(){try{await requireAuth();const p=await loadCloudProfile();const el=document.getElementById('headerYear');if(el)el.textContent='Ano: '+p.year;}catch(e){}})();</script><footer class="project-footer">project by tecnicoreis.messias@gmail.com</footer></body></html>

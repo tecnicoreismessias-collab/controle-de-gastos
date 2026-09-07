@@ -1,0 +1,444 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meu Controle Financeiro</title><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#182033;--muted:#697386;--line:#e5e7eb;--p:#2563eb;--g:#16a34a;--r:#dc2626;--o:#d97706;--shadow:0 10px 30px rgba(15,23,42,.08)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}.nav{max-width:1180px;margin:auto;padding:15px 22px;display:flex;justify-content:space-between;align-items:center;gap:18px}.brand{font-size:21px;font-weight:900}.brand small{display:block;color:var(--muted);font-size:12px;font-weight:500}.navlinks{display:flex;gap:7px;align-items:center}.navlinks .btn{border-color:transparent;background:transparent}.navlinks .btn:hover{background:#eef2ff}.navlinks .btn.active{background:#eef2ff;color:var(--p)}
+main{max-width:1180px;margin:auto;padding:24px 22px}.screen{display:none}.active{display:block}.hero{min-height:calc(100vh - 80px);display:block}.home{text-align:center;width:100%;max-width:1180px;margin:auto}.home .monthcards{text-align:left;margin-top:25px}.summarycards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:28px;text-align:left}.summarycards .card{min-height:110px}.summarycards .num{font-size:25px}.summarytitle{margin-top:34px;font-size:18px;font-weight:950;text-align:left}.summaryhint{text-align:left;margin-top:4px}.label{color:var(--muted);font-size:13px;font-weight:700}.total{font-size:clamp(45px,9vw,84px);font-weight:950;letter-spacing:-3px;margin:8px 0 25px}.hint{color:var(--muted);margin-bottom:25px}
+.actions,.filters,.add{display:flex;gap:10px;flex-wrap:wrap}.actions{justify-content:center}.btn{padding:11px 15px;border-radius:11px;border:1px solid var(--line);background:#fff;font-weight:800;cursor:pointer}.primary{background:var(--p);color:#fff;border-color:var(--p)}.dark{background:#182033;color:#fff}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.title{font-size:30px;font-weight:950}.back{border:0;background:none;color:var(--p);font-weight:800;cursor:pointer}
+.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:13px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:var(--shadow);transition:transform .16s,box-shadow .16s}.card:hover{transform:translateY(-2px);box-shadow:0 14px 35px rgba(15,23,42,.11)}.num{font-size:22px;font-weight:900;margin-top:7px}.green{color:var(--g)}.red{color:var(--r)}.orange{color:var(--o)}.muted{font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}h3{margin:0 0 4px}
+table{width:100%;border-collapse:collapse;margin-top:12px}th,td{padding:9px 6px;border-bottom:1px solid var(--line);font-size:13px;text-align:left}th{font-size:10px;color:var(--muted);text-transform:uppercase}td:last-child,th:last-child{text-align:right}.pill{border-radius:99px;padding:4px 8px;font-size:10px;font-weight:800}.paid{background:#dcfce7;color:#166534}.pending{background:#fee2e2;color:#991b1b}.del{border:0;background:none;color:var(--r);font-weight:800;cursor:pointer}
+.add{margin-top:13px}.add input,.add select{min-width:0;flex:1;border:1px solid var(--line);border-radius:10px;padding:10px}.monthcards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.monthcards .card{cursor:pointer;text-align:left;position:relative;overflow:hidden;min-height:108px;display:flex;flex-direction:column;justify-content:center;transition:transform .16s,box-shadow .16s,background .16s}.monthcards .card:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--p)}.monthcards .monthnum{font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.08em}.monthcards .monthtotal{font-size:24px;font-weight:950;margin-top:5px}.monthcards .monthresult{font-size:19px;font-weight:950;margin-top:10px;letter-spacing:-.2px}.monthcards .card.month-positive{background:#16a34a;border-color:#16a34a;color:#fff}.monthcards .card.month-positive:before{background:#0f7a32}.monthcards .card.month-positive .monthnum{color:rgba(255,255,255,.82)}.monthcards .card.month-negative{background:#dc2626;border-color:#dc2626;color:#fff}.monthcards .card.month-negative:before{background:#a91b1b}.monthcards .card.month-negative .monthnum{color:rgba(255,255,255,.82)}.monthcards .card.month-zero{background:var(--card)}@media(max-width:900px){.monthcards{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.monthcards{grid-template-columns:repeat(2,1fr)}}
+.chart{height:520px}.chart canvas{height:430px!important}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0}.section-actions{display:flex;gap:7px;flex-wrap:wrap}.edit{border:1px solid #dbeafe;background:#eff6ff;color:#1d4ed8;border-radius:8px;padding:7px 11px;font-weight:800;cursor:pointer}.edit:hover{background:#dbeafe}.iconbtn{width:42px;height:42px;border:0;border-radius:12px;font-size:20px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}.apply{background:#dcfce7;color:#15803d}.remove{background:#fee2e2;color:#dc2626}.pay{border:1px solid #bbf7d0;background:#f0fdf4;color:#15803d;border-radius:8px;padding:6px 9px;font-weight:800;cursor:pointer}.del{border:0;background:none;color:var(--r);font-weight:800;cursor:pointer}.modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;padding:18px;z-index:20}.modal.show{display:flex}.modalbox{width:min(520px,100%);background:#fff;border-radius:20px;padding:22px;box-shadow:0 25px 70px rgba(15,23,42,.25)}.modalgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.modalgrid .full{grid-column:1/-1}.modalbox input,.modalbox select{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px}.modalactions{display:flex;justify-content:flex-end;gap:9px;margin-top:15px}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.monthcards{grid-template-columns:repeat(2,1fr)}.summarycards{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
+@media(max-width:520px){main{padding:14px}.cards,.monthcards{grid-template-columns:1fr}.title{font-size:24px}.chart{height:400px}.chart canvas{height:320px!important}}
+.goal-panel{margin-top:22px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}.goal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.goal-title{font-size:18px;font-weight:950}.goal-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;margin-top:14px;align-items:end}.goal-field label{display:block;color:var(--muted);font-size:11px;font-weight:800;margin-bottom:6px;text-transform:uppercase}.goal-field input{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;font-size:15px}.goal-progress{margin-top:15px}.goal-progress-top{display:flex;justify-content:space-between;gap:12px;font-size:12px}.progress{height:10px;background:#eef2f7;border-radius:99px;overflow:hidden;margin-top:7px}.progress>span{display:block;height:100%;background:var(--p);border-radius:99px;width:0}.goal-status{margin-top:10px;font-weight:900;font-size:13px}.goal-status.ok{color:var(--g)}.goal-status.no{color:var(--r)}@media(max-width:700px){.goal-grid{grid-template-columns:1fr 1fr}.goal-grid .btn{grid-column:1/-1}}.profile-panel{margin:0 0 22px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}.profile-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.profile-title{font-size:18px;font-weight:950}.profile-grid{display:grid;grid-template-columns:1.3fr 1fr auto;gap:12px;margin-top:14px;align-items:end}.profile-field label{display:block;color:var(--muted);font-size:11px;font-weight:800;margin-bottom:6px;text-transform:uppercase}.profile-field input{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;font-size:15px}.year-actions{display:flex;gap:8px;flex-wrap:wrap}.year-badge{display:inline-flex;align-items:center;gap:6px;background:#eef2ff;color:#3730a3;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:900}.profile-note{margin-top:10px;font-size:12px;color:var(--muted)}.monthcards .card.month-locked{background:#f1f3f6;border-color:#d7dce5;color:#7b8494;cursor:not-allowed;box-shadow:none}.monthcards .card.month-locked:before{background:#a8b0bd}.monthcards .card.month-locked .monthnum{color:#8992a0}.monthcards .locklabel{font-size:12px;font-weight:900;margin-top:8px}@media(max-width:700px){.profile-grid{grid-template-columns:1fr}.profile-grid .btn{width:100%}}
+/* ===== INÍCIO — acabamento visual V8 ===== */
+:root{--p:#1769e0;--p2:#0f4ea8;--ink:#172033;--muted:#6b778c;--bg:#f3f6fb;--line:#e4eaf2;--shadow:0 14px 40px rgba(20,45,85,.08)}
+body{background:linear-gradient(180deg,#eef4fb 0,#f6f8fc 260px,#f4f6fa 100%)}
+header{background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid rgba(214,223,235,.9)}
+.nav{max-width:1220px;padding:14px 24px}.brand{display:flex;align-items:center;gap:11px;font-size:19px;letter-spacing:-.3px}.brand>span:last-child{display:block}.brand-mark{width:36px;height:36px;border-radius:11px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#123f79,#2b7de9);color:#fff;font-size:19px;font-weight:950;box-shadow:0 7px 18px rgba(23,105,224,.22)}.brand small{font-size:11px;margin-top:2px}.navlinks{background:#f3f6fa;border:1px solid #e5eaf1;border-radius:13px;padding:4px}.navlinks .btn{padding:9px 13px;border-radius:9px}.navlinks .btn.active{background:#fff;color:var(--p);box-shadow:0 3px 10px rgba(20,45,85,.07)}
+main{max-width:1220px;padding:28px 24px}.hero{min-height:calc(100vh - 72px)}.dashboard-home{text-align:left}.welcome{display:flex;justify-content:space-between;align-items:center;gap:20px;margin:5px 0 22px;padding:25px 28px;border-radius:22px;background:linear-gradient(135deg,#0f3d73,#1769e0 68%,#2f84e9);color:#fff;box-shadow:0 18px 45px rgba(19,74,140,.22);position:relative;overflow:hidden}.welcome:after{content:'';position:absolute;width:240px;height:240px;border-radius:50%;right:-70px;top:-100px;background:rgba(255,255,255,.09)}.eyebrow,.profile-kicker{font-size:10px;letter-spacing:.12em;font-weight:900}.welcome .eyebrow{color:rgba(255,255,255,.72);margin-bottom:5px}.welcome-title{font-size:29px;font-weight:950;letter-spacing:-.8px}.welcome-sub{font-size:13px;color:rgba(255,255,255,.8);margin-top:5px}.welcome-year{position:relative;z-index:1;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:11px 15px;font-weight:900;white-space:nowrap}
+.profile-panel,.goal-panel{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:20px;padding:21px;box-shadow:var(--shadow)}.profile-panel{margin-bottom:16px}.profile-head,.goal-head{align-items:flex-start}.profile-kicker{color:#6f7d91;margin-bottom:4px}.profile-title,.goal-title{font-size:19px;letter-spacing:-.25px}.profile-grid{margin-top:16px}.profile-field input,.goal-field input{background:#fbfcfe;border-color:#dce4ee;transition:border-color .15s,box-shadow .15s}.profile-field input:focus,.goal-field input:focus{outline:none;border-color:#6da5ee;box-shadow:0 0 0 3px rgba(23,105,224,.1);background:#fff}.year-badge{background:#edf5ff;color:#175cae;border:1px solid #d7e7fb}.new-year{background:#fff}.save-config{min-height:42px}.profile-note{padding-top:2px}
+.goal-panel{margin-top:16px}.goal-grid{margin-top:15px}.goal-progress{padding-top:2px}.progress{height:9px;background:#edf1f6}.progress>span{background:linear-gradient(90deg,#1769e0,#52a0ff)}
+.months-heading{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:28px 2px 13px}.months-title{font-size:21px;font-weight:950;letter-spacing:-.4px}.months-heading .hint{margin:4px 0 0;font-size:12px}.status-legend{display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end;color:#738096;font-size:10px;font-weight:800}.status-legend span{display:inline-flex;align-items:center;gap:5px}.dot{width:7px;height:7px;border-radius:50%;display:inline-block}.dot.positive{background:#16a34a}.dot.negative{background:#dc2626}.dot.neutral{background:#aeb7c4}.dot.locked{background:#7c8797}
+.monthcards{gap:13px;margin-top:0}.monthcards .card{min-height:118px;border-radius:18px;border-color:#e1e7ef;padding:18px 18px 17px;box-shadow:0 8px 24px rgba(20,45,85,.055)}.monthcards .card:hover{transform:translateY(-3px);box-shadow:0 15px 32px rgba(20,45,85,.12)}.monthcards .card:before{width:3px}.monthcards .monthnum{font-size:10px}.monthcards .monthtotal{font-size:20px;letter-spacing:.1px}.monthcards .monthresult{font-size:18px}.monthcards .card.month-positive,.monthcards .card.month-negative{box-shadow:0 12px 26px rgba(20,45,85,.12)}.monthcards .card.month-positive{background:linear-gradient(135deg,#169b50,#20b35e)}.monthcards .card.month-negative{background:linear-gradient(135deg,#d72c37,#ee4b55)}.monthcards .card.month-locked{background:linear-gradient(135deg,#f0f3f7,#e9edf2)}
+@media(max-width:700px){.nav{padding:11px 14px}.brand{font-size:16px}.brand-mark{width:32px;height:32px}.navlinks .btn{padding:8px 9px;font-size:12px}.navlinks .btn:first-child{font-size:0}.navlinks .btn:first-child:after{content:'⌂';font-size:18px}.welcome{padding:21px;border-radius:18px;align-items:flex-start}.welcome-title{font-size:23px}.welcome-year{padding:8px 10px;font-size:11px}.months-heading{align-items:flex-start;flex-direction:column}.status-legend{justify-content:flex-start}.profile-head{align-items:flex-start}}
+@media(max-width:520px){main{padding:16px 13px}.welcome{margin-top:0}.welcome-sub{font-size:12px}.welcome-year{display:none}.profile-panel,.goal-panel{padding:17px;border-radius:17px}.year-actions{width:100%}.year-actions .btn,.year-badge{flex:1;text-align:center;justify-content:center}.months-title{font-size:19px}}
+
+/* ===== INÍCIO — Visual 2: compacto, executivo e inspirado na referência ===== */
+body{background:#eef3f9;color:#15243a}
+header{position:sticky;top:0;z-index:50;background:linear-gradient(135deg,#0c315a 0%,#124a83 55%,#155fa4 100%);border:0;box-shadow:0 8px 26px rgba(10,39,72,.18)}
+.nav{max-width:1240px;padding:12px 22px;min-height:68px}
+.brand{color:#fff}.brand small{color:rgba(255,255,255,.72)}
+.brand-mark{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);box-shadow:none}
+.top-user{display:flex;align-items:center;gap:10px;margin-left:auto;margin-right:4px;color:#fff;font-size:12px;font-weight:800}
+.top-user-name{padding:8px 11px;border-radius:12px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12)}
+.top-year{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14);white-space:nowrap}
+.navlinks{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:3px}
+.navlinks .btn{color:rgba(255,255,255,.86);border:0;padding:8px 12px}
+.navlinks .btn:hover,.navlinks .btn.active{background:#fff;color:#155fa4;box-shadow:0 3px 10px rgba(0,0,0,.12)}
+main{max-width:1240px;padding:20px 22px 34px}
+.welcome{display:none!important}
+.profile-panel{margin:0 0 14px;padding:17px 20px;border-radius:18px;background:rgba(255,255,255,.97);box-shadow:0 8px 28px rgba(26,58,92,.08);border:1px solid #dce6f1}
+.profile-head{align-items:center}.profile-kicker{color:#58708d}.profile-title{font-size:18px}.profile-grid{margin-top:12px;grid-template-columns:1.35fr 1fr auto;gap:10px}.profile-field label{color:#62768e}.profile-field input{padding:10px 12px;border-radius:10px;background:#f8fafc}
+.year-actions .btn{padding:9px 12px}.year-badge{padding:7px 10px}
+.goal-panel{margin-top:14px;padding:17px 20px;border-radius:18px;box-shadow:0 8px 28px rgba(26,58,92,.07)}
+.goal-grid{grid-template-columns:1fr 1fr;gap:12px}.goal-field input{padding:10px 12px}
+.months-heading{margin:18px 2px 10px}.months-title{font-size:20px;font-weight:950;letter-spacing:-.25px}.months-heading .hint{margin:3px 0 0;font-size:12px}.status-legend{gap:12px;font-size:11px}
+.monthcards{gap:11px}.monthcards .card{min-height:96px;border-radius:14px;padding:14px 15px;background:#fff;box-shadow:0 7px 20px rgba(24,55,88,.07)}
+.monthcards .card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(24,55,88,.11)}
+.monthcards .monthtotal{font-size:18px;margin-top:4px}.monthcards .monthresult{font-size:17px;margin-top:7px}.monthcards .monthnum{font-size:10px}
+.monthcards .card.month-positive{background:linear-gradient(135deg,#e9fff0,#d9f8e2);border-color:#91dfab;color:#176a36}.monthcards .card.month-positive:before{background:#24a957}.monthcards .card.month-positive .monthnum{color:#42835a}
+.monthcards .card.month-negative{background:linear-gradient(135deg,#fff0f1,#ffe1e4);border-color:#f0a0aa;color:#a82332}.monthcards .card.month-negative:before{background:#dc3344}.monthcards .card.month-negative .monthnum{color:#b44b58}
+.monthcards .card.month-locked{background:#eef1f5;border-color:#d5dce6;color:#7a8798}.monthcards .locklabel{font-size:11px}
+@media(max-width:900px){.top-user{display:none}.monthcards{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:650px){.monthcards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.profile-grid{grid-template-columns:1fr}.goal-grid{grid-template-columns:1fr}.nav{padding:10px 13px}.brand{font-size:17px}.navlinks .btn{padding:7px 9px;font-size:11px}.months-heading{display:block}.status-legend{margin-top:8px}}
+@media(max-width:520px){main{padding:14px 12px 26px}.profile-panel,.goal-panel{padding:15px}.monthcards{gap:9px}.monthcards .card{min-height:88px;padding:12px}.monthcards .monthtotal{font-size:16px}}
+<style>
+.home-online-summary{margin:22px 0 0;text-align:left}.online-summary-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}.online-summary-title{font-size:18px;font-weight:950}.online-summary-sub{font-size:12px;color:var(--muted);margin-top:3px}.sync-badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:900;background:#ecfdf5;color:#15803d;border:1px solid #bbf7d0}.sync-badge.error{background:#fff1f2;color:#b91c1c;border-color:#fecdd3}.online-summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.online-stat{min-height:98px}.online-stat .label{font-size:11px}.online-stat .num{font-size:21px}.online-stat.balance-positive .num{color:var(--g)}.online-stat.balance-negative .num{color:var(--r)}@media(max-width:900px){.online-summary-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.online-summary-grid{grid-template-columns:1fr}}
+
+/* ===== HISTÓRICO DE ANOS ===== */
+.history-panel{margin-top:18px;text-align:left;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow)}
+.history-head{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.history-title{font-size:19px;font-weight:950}.history-sub{font-size:12px;color:var(--muted);margin-top:3px}.history-list{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:15px}.history-item{border:1px solid #dfe6ef;border-radius:16px;padding:15px;background:#fbfcfe;display:flex;align-items:center;justify-content:space-between;gap:12px}.history-year{font-size:21px;font-weight:950;color:#174f8f}.history-status{font-size:10px;color:#718096;font-weight:800;margin-top:3px}.history-view{padding:9px 12px;border-radius:10px;border:1px solid #cfe0f6;background:#eef6ff;color:#175cae;font-weight:900;cursor:pointer}.history-empty{padding:14px;border:1px dashed #d5dce6;border-radius:14px;color:var(--muted);font-size:12px;margin-top:12px}.archive-modal{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;padding:18px;z-index:30}.archive-modal.show{display:flex}.archive-box{width:min(1080px,100%);max-height:90vh;overflow:auto;background:#f7f9fc;border-radius:22px;padding:22px;box-shadow:0 30px 90px rgba(15,23,42,.28)}.archive-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.archive-year{font-size:28px;font-weight:950;letter-spacing:-.5px}.archive-close{border:0;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-weight:900;cursor:pointer}.archive-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:11px}.archive-summary .card{min-height:88px}.archive-month-title{margin:20px 0 10px;font-size:18px;font-weight:950}.archive-chart-wrap{height:420px;background:linear-gradient(135deg,#fff,#fbfdff);border:1px solid #e0e8f2;border-radius:16px;padding:16px;box-shadow:0 7px 24px rgba(22,53,91,.07)}.archive-chart-wrap canvas{width:100%!important;height:100%!important}.archive-months{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.archive-month{background:#fff;border:1px solid #e0e6ee;border-radius:14px;padding:14px}.archive-month-name{font-size:11px;color:#6b778c;font-weight:900}.archive-month-values{margin-top:7px;font-size:13px;line-height:1.55}.archive-month-values strong{font-size:17px}.archive-note{margin-top:10px;font-size:11px;color:#778398}.archive-note+.archive-month-title{margin-top:20px}@media(max-width:900px){.history-list{grid-template-columns:repeat(2,1fr)}.archive-summary{grid-template-columns:repeat(2,1fr)}.archive-months{grid-template-columns:repeat(3,1fr)}.archive-chart-wrap{height:390px}}@media(max-width:600px){.history-list{grid-template-columns:1fr}.archive-summary{grid-template-columns:1fr}.archive-months{grid-template-columns:repeat(2,1fr)}.archive-chart-wrap{height:330px}}
+
+/* ===== HISTÓRICO NO MENU SUPERIOR ===== */
+.history-panel{display:none!important}
+.history-picker{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;padding:18px;z-index:35}.history-picker.show{display:flex}.history-picker-box{width:min(420px,100%);background:#f7f9fc;border-radius:22px;padding:22px;box-shadow:0 30px 90px rgba(15,23,42,.28)}.history-picker-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.history-picker-title{font-size:22px;font-weight:950}.history-picker-sub{font-size:12px;color:var(--muted);margin-top:4px}.history-year-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.history-year-btn{border:1px solid #d7e2ef;background:#fff;border-radius:14px;padding:14px;text-align:left;cursor:pointer;font-weight:950;color:#174f8f}.history-year-btn:hover{background:#eef6ff;border-color:#b9d4f2}.history-picker-empty{padding:14px;border:1px dashed #d5dce6;border-radius:14px;color:var(--muted);font-size:12px}.history-picker-close{border:0;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-weight:900;cursor:pointer}
+</style></style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="auth.js"></script><style>.project-footer{width:100%;text-align:center;padding:22px 16px 18px;color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:.2px}.project-footer::first-letter{text-transform:lowercase}</style></head><body><script>requireAuth();</script>
+<header><div class="nav"><div class="brand"><span class="brand-mark">$</span><span>Meu Controle Financeiro<small>organização simples, visão profissional</small></span></div><div class="top-user"><span class="top-user-name">👤 <strong id="navUser">Olá</strong></span><span class="top-year" id="navYear">📅 Ano: 2024</span></div><div class="navlinks"><button id="navhome" class="btn active" onclick="home()">⌂ Início</button><button id="navcharts" class="btn" onclick="window.location.href='analises.html'">◫ Análises</button><button class="btn" onclick="openHistoryPicker()">📁 Histórico</button><button class="btn" onclick="signOut()">Sair</button></div></div></header>
+<main>
+<section id="home" class="screen active hero"><div class="home dashboard-home">
+  <div class="welcome"><div><div class="eyebrow">PAINEL FINANCEIRO</div><div class="welcome-title">Olá, <span id="welcomeName">seja bem-vindo(a)</span> 👋</div><div class="welcome-sub">Acompanhe seus meses, suas metas e a evolução do seu controle em um só lugar.</div></div><div class="welcome-year" id="welcomeYear">2024</div></div>
+  <div class="profile-panel"><div class="profile-head"><div><div class="profile-kicker">👤 PERFIL E PERÍODO</div><div class="profile-title">Meu Controle Financeiro</div><div class="muted">Defina seu nome e o mês em que começou a usar este controle.</div></div><div class="year-actions"><span id="activeYearBadge" class="year-badge">📅 Ano ativo: 2024</span><button class="btn new-year" onclick="startNewYear()">↻ Iniciar novo ano</button></div></div><div class="profile-grid"><div class="profile-field"><label>Nome</label><input id="profileName" type="text" placeholder="Digite seu nome"></div><div class="profile-field"><label>Data de início</label><input id="profileStart" type="date"></div><button class="btn primary save-config" onclick="saveProfile()">✓ Salvar configuração</button></div><div id="profileNote" class="profile-note"></div></div>
+  <div class="goal-panel"><div class="goal-head"><div><div class="profile-kicker">🎯 OBJETIVOS</div><div class="goal-title">Minhas metas</div><div class="muted">Economia = entradas − gastos pagos.</div></div><button class="btn primary" onclick="saveGoals()">✓ Salvar metas</button></div><div class="goal-grid"><div class="goal-field"><label>Meta anual</label><input id="goalAnnual" inputmode="decimal" placeholder="R$ 0,00"></div><div class="goal-field"><label>Meta mensal</label><input id="goalMonthly" inputmode="decimal" placeholder="R$ 0,00"></div></div><div id="goalAnnualProgress" class="goal-progress"></div></div>
+  <div class="home-online-summary">
+    <div class="online-summary-head"><div><div class="profile-kicker">☁ VISÃO ONLINE</div><div class="online-summary-title">Resumo do ano</div><div class="online-summary-sub">Valores calculados diretamente dos lançamentos sincronizados.</div></div><span id="homeSync" class="sync-badge">☁ Sincronizado</span></div>
+    <div class="online-summary-grid">
+      <div class="card online-stat"><div class="label">ENTRADAS / SALÁRIOS</div><div id="homeIncome" class="num green">R$ 0,00</div></div>
+      <div class="card online-stat"><div class="label">GASTOS TOTAIS</div><div id="homeExpenses" class="num red">R$ 0,00</div></div>
+      <div class="card online-stat"><div class="label">GASTOS PAGOS</div><div id="homePaid" class="num red">R$ 0,00</div></div>
+      <div class="card online-stat"><div class="label">GASTOS NÃO PAGOS</div><div id="homePending" class="num orange">R$ 0,00</div></div>
+      <div id="homeBalanceCard" class="card online-stat"><div class="label">LUCRO / SALDO</div><div id="homeBalance" class="num">R$ 0,00</div></div>
+    </div>
+  </div>
+  <div class="months-heading"><div><div class="profile-kicker">📅 PERÍODO</div><div class="months-title">Seus meses</div><div class="hint">Clique em um mês para consultar e editar seus lançamentos.</div></div><div class="status-legend"><span><i class="dot positive"></i>Lucro</span><span><i class="dot negative"></i>Prejuízo</span><span><i class="dot neutral"></i>Sem movimento</span><span><i class="dot locked"></i>Bloqueado</span></div></div>
+  <div id="monthCards" class="monthcards"></div>
+iv>
+</div></section>
+<section id="month" class="screen"><div class="head"><div><div id="mt" class="title"></div><div class="muted">Adicione ou exclua gastos fixos, gastos extras e salários/entradas.</div></div><button class="back" onclick="home()">← Início</button></div>
+<div class="cards"><div class="card"><div class="label">ENTRADAS / SALÁRIOS</div><div id="inc" class="num green"></div></div><div class="card"><div class="label">GASTOS FIXOS</div><div id="fix" class="num red"></div></div><div class="card"><div class="label">GASTOS EXTRAS</div><div id="ext" class="num red"></div></div><div class="card"><div class="label">LUCRO / SALDO</div><div id="bal" class="num"></div></div></div>
+<div class="grid"><div class="panel"><div class="toolbar"><div><h3>Gastos fixos</h3><div class="muted">Contas recorrentes.</div></div><button class="btn primary" onclick="openAdd('fixed')">+ Novo</button></div><div id="fixed"></div></div>
+<div class="panel"><div class="toolbar"><div><h3>Gastos extras</h3><div class="muted">Gastos não recorrentes.</div></div><button class="btn primary" onclick="openAdd('extra')">+ Novo</button></div><div id="extra"></div></div>
+<div class="panel"><div class="toolbar"><div><h3>Salários / entradas</h3><div class="muted">Todas as entradas do mês.</div></div><button class="btn primary" onclick="openAdd('entries')">+ Novo</button></div><div id="entries"></div></div>
+</section>
+<section id="charts" class="screen"><div class="head"><div><div class="title">Gráficos</div><div class="muted">Selecione gastos, entradas, salários ou lucro.</div></div><button class="back" onclick="home()">← Voltar</button></div><div id="filters" class="filters"></div><div class="panel chart"><canvas id="chart"></canvas></div></section>
+</main>
+<div id="historyPicker" class="history-picker" onclick="if(event.target===this)closeHistoryPicker()"><div class="history-picker-box"><div class="history-picker-head"><div><div class="profile-kicker">📁 HISTÓRICO</div><div class="history-picker-title">Escolha o ano</div><div class="history-picker-sub">Os anos anteriores ficam disponíveis somente para consulta.</div></div><button class="history-picker-close" onclick="closeHistoryPicker()">Fechar</button></div><div id="historyYearList" class="history-year-list"></div></div></div>
+<div id="archiveModal" class="archive-modal" onclick="if(event.target===this)closeArchive()"><div class="archive-box"><div class="archive-top"><div><div class="profile-kicker">📁 ANO ARQUIVADO</div><div id="archiveYear" class="archive-year">2024</div></div><button class="archive-close" onclick="closeArchive()">Fechar</button></div><div id="archiveSummary" class="archive-summary"></div><div class="archive-month-title">Visão financeira do ano</div><div class="archive-chart-wrap"><canvas id="archiveChart"></canvas></div><div class="archive-note">Receitas, gastos e metas mês a mês. O último ponto mostra o total anual de receitas e gastos e a meta anual.</div><div class="archive-month-title">Resumo por mês</div><div id="archiveMonths" class="archive-months"></div><div class="archive-note">Este modo é somente para consulta. Os lançamentos do ano atual não são alterados.</div></div></div>
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()"><div class="modalbox"><h2 id="modalTitle" style="margin:0 0 4px">Novo lançamento</h2><div id="modalHint" class="muted">Preencha os dados.</div><div class="modalgrid" style="margin-top:15px"><input id="mDesc" class="full" placeholder="Descrição / origem"><input id="mValue" placeholder="Valor"><select id="mStatus"><option>PAGO</option><option>DEVENDO</option></select></div><div class="modalactions"><button class="btn" onclick="closeModal()">Cancelar</button><button id="modalDelete" class="iconbtn remove" title="Excluir lançamento" aria-label="Excluir lançamento" onclick="deleteModalItem()">🗑</button><button class="iconbtn apply" title="Aplicar alterações" aria-label="Aplicar alterações" onclick="saveModal()">✓</button></div></div></div>
+<script>
+const initial={"JANEIRO":{"fixed":[{"id":"f-JANEIRO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-JANEIRO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-JANEIRO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-JANEIRO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-JANEIRO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-JANEIRO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-JANEIRO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-JANEIRO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-JANEIRO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-JANEIRO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-JANEIRO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-JANEIRO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-JANEIRO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-JANEIRO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-JANEIRO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-JANEIRO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-JANEIRO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-JANEIRO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"FEVEREIRO":{"fixed":[{"id":"f-FEVEREIRO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-FEVEREIRO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-FEVEREIRO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-FEVEREIRO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-FEVEREIRO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-FEVEREIRO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"MARÇO":{"fixed":[{"id":"f-MARÇO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-MARÇO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-MARÇO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-MARÇO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-MARÇO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-MARÇO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-MARÇO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-MARÇO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-MARÇO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-MARÇO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-MARÇO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-MARÇO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-MARÇO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-MARÇO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-MARÇO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-MARÇO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-MARÇO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-MARÇO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"ABRIL":{"fixed":[{"id":"f-ABRIL-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-ABRIL-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-ABRIL-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-ABRIL-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-ABRIL-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-ABRIL-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-ABRIL-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-ABRIL-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-ABRIL-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-ABRIL-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-ABRIL-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-ABRIL-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-ABRIL-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-ABRIL-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-ABRIL-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-ABRIL-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-ABRIL-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-ABRIL-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"MAIO":{"fixed":[{"id":"f-MAIO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-MAIO-10","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-MAIO-11","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-MAIO-12","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-MAIO-13","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-MAIO-14","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-MAIO-15","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-MAIO-16","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-MAIO-17","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-MAIO-18","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-MAIO-19","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-MAIO-20","desc":"ACADEMIA","value":0,"status":"PAGO"},{"id":"f-MAIO-21","desc":"DENTISTA ","value":0,"status":"PAGO"}],"extra":[{"id":"e-MAIO-28","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"e-MAIO-29","desc":"ROUPAS","value":0,"status":"DEVENDO"},{"id":"e-MAIO-30","desc":"CARTÃO DE CREDITO","value":0,"status":"PAGO"},{"id":"e-MAIO-32","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"e-MAIO-33","desc":"FAZER O CABELO","value":0,"status":"PAGO"},{"id":"e-MAIO-34","desc":"THATY","value":0,"status":"PAGO"},{"id":"e-MAIO-35","desc":"DENIS","value":0,"status":"PAGO"},{"id":"e-MAIO-36","desc":"MANU","value":0,"status":"PAGO"},{"id":"e-MAIO-37","desc":"GASOLINA","value":0,"status":"PAGO"},{"id":"e-MAIO-38","desc":"LAZER","value":0,"status":"PAGO"}],"entries":[{"id":"i-MAIO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"JUNHO":{"fixed":[{"id":"f-JUNHO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-JUNHO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-JUNHO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-JUNHO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-JUNHO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-JUNHO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-JUNHO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-JUNHO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-JUNHO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-JUNHO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-JUNHO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-JUNHO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-JUNHO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-JUNHO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-JUNHO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-JUNHO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-JUNHO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-JUNHO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"JULHO":{"fixed":[{"id":"f-JULHO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-JULHO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-JULHO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-JULHO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-JULHO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-JULHO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-JULHO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-JULHO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-JULHO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-JULHO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-JULHO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-JULHO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-JULHO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-JULHO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-JULHO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-JULHO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-JULHO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-JULHO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"AGOSTO":{"fixed":[{"id":"f-AGOSTO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-AGOSTO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-AGOSTO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-AGOSTO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-AGOSTO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-AGOSTO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-AGOSTO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-AGOSTO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-AGOSTO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-AGOSTO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-AGOSTO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-AGOSTO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-AGOSTO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-AGOSTO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-AGOSTO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-AGOSTO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-AGOSTO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-AGOSTO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"SETEMBRO":{"fixed":[{"id":"f-SETEMBRO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-15","desc":"EXPLICADORA","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-SETEMBRO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-SETEMBRO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-SETEMBRO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-SETEMBRO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-SETEMBRO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"OUTUBRO":{"fixed":[{"id":"f-OUTUBRO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-OUTUBRO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-OUTUBRO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-OUTUBRO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-OUTUBRO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-OUTUBRO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"NOVEMBRO":{"fixed":[{"id":"f-NOVEMBRO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-NOVEMBRO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-NOVEMBRO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-NOVEMBRO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-NOVEMBRO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-NOVEMBRO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"DEZEMBRO":{"fixed":[{"id":"f-DEZEMBRO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-DEZEMBRO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-DEZEMBRO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-DEZEMBRO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-DEZEMBRO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-DEZEMBRO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]}};const months=Object.keys(initial);let db=blankDataFromInitial(initial);let cloudLoaded=false;let current='JULHO',ch=null;
+const money=n=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(n)||0);
+const val=x=>{x=(x||'').toString().replace(/\./g,'').replace(',','.');return Number(x.replace(/[^\d.-]/g,''))||0};
+const sum=a=>(a||[]).reduce((t,x)=>t+Number(x.value||0),0);
+
+function stat(m){
+  const d=db[m]||{entries:[],fixed:[],extra:[]};
+  const income=sum(d.entries);
+  const fixed=sum(d.fixed);
+  const extra=sum(d.extra);
+  const gastos=fixed+extra;
+  const pagos=sum((d.fixed||[]).filter(x=>x.status==='PAGO'))+sum((d.extra||[]).filter(x=>x.status==='PAGO'));
+  const devendo=sum((d.fixed||[]).filter(x=>x.status==='DEVENDO'))+sum((d.extra||[]).filter(x=>x.status==='DEVENDO'));
+  const lucro=income-gastos;
+  const economia=income-pagos;
+  return {income,fixed,extra,pagos,devendo,gastos,total:gastos,lucro,economia};
+}
+const DEFAULT_YEAR=2024;
+function getProfile(){return getAppProfile();}
+function saveProfileData(p){setAppProfile(p);}
+function activeMonthIndex(){const p=getProfile();if(!p.startDate)return 0;const d=new Date(p.startDate+'T00:00:00');if(Number.isNaN(d.getTime())||d.getFullYear()!==Number(p.year))return 0;return d.getMonth();}
+function isMonthActive(m){return months.indexOf(m)>=activeMonthIndex();}
+async function save(){
+  if(cloudLoaded){
+    try{await cloudSaveData(db,getProfile().year,getGoals(),[current]);}
+    catch(e){console.error('Cloud save',e);throw e;}
+  }
+}
+function setNav(active){
+  ['home','charts'].forEach(x=>{const el=document.getElementById('nav'+x);if(el)el.classList.toggle('active',x===active)});
+}
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active')}
+function getGoals(){return getAppGoals();}
+async function saveGoals(){
+  const annual=val(document.getElementById('goalAnnual').value);
+  const monthly=val(document.getElementById('goalMonthly').value);
+  setAppGoals({annual,monthly});
+  try{await ensureAnnualCycle(getProfile().year,{annual,monthly});renderGoals();alert('Metas salvas com sucesso.');}
+  catch(e){console.error(e);alert('Não foi possível salvar as metas no banco. Nenhuma alteração foi confirmada.');}
+}
+function renderGoals(){
+  const g=getGoals();
+  const a=document.getElementById('goalAnnual'),m=document.getElementById('goalMonthly');
+  if(a)a.value=g.annual?money(g.annual):'';
+  if(m)m.value=g.monthly?money(g.monthly):'';
+  const annualReal=months.reduce((t,x)=>t+stat(x).economia,0);
+  const pct=g.annual>0?(annualReal/g.annual)*100:0;
+  const safe=Math.max(0,Math.min(100,pct));
+  const el=document.getElementById('goalAnnualProgress');
+  if(!el)return;
+  if(g.annual>0){
+    const ok=annualReal>=g.annual;
+    el.innerHTML='<div class="goal-progress-top"><span>Meta anual: <strong>'+money(g.annual)+'</strong></span><strong>'+money(annualReal)+' · '+pct.toFixed(1).replace('.',',')+'%</strong></div><div class="progress"><span style="width:'+safe+'%"></span></div><div class="goal-status '+(ok?'ok':'no')+'">'+(ok?'🟢 META ANUAL ATINGIDA':'🔴 META ANUAL AINDA NÃO ATINGIDA')+'</div>';
+  }else{el.innerHTML='<div class="muted">Defina uma meta anual e mensal para acompanhar seu progresso.</div>'}
+}
+
+function renderProfile(){
+  const p=getProfile();
+  const n=document.getElementById('profileName'),d=document.getElementById('profileStart'),b=document.getElementById('activeYearBadge'),note=document.getElementById('profileNote');
+  if(n)n.value=p.name||'';
+  if(d)d.value=p.startDate||'';
+  if(b)b.textContent='📅 Ano ativo: '+p.year;
+  const w=document.getElementById('welcomeName'),wy=document.getElementById('welcomeYear');const nu=document.getElementById('navUser'),ny=document.getElementById('navYear');
+  if(w)w.textContent=p.name||'seja bem-vindo(a)';
+  if(wy)wy.textContent='Ano '+p.year;
+  if(nu)nu.textContent=p.name||'Usuário';
+  if(ny)ny.textContent='📅 Ano: '+p.year;
+  if(note){
+    note.textContent=p.startDate?'Controle iniciado em '+new Date(p.startDate+'T00:00:00').toLocaleDateString('pt-BR')+'. Meses anteriores ficam bloqueados e não entram nas análises.':'Sem data de início definida: todos os meses estão disponíveis.';
+  }
+}
+async function saveProfile(){
+  const old=getProfile(), name=(document.getElementById('profileName').value||'').trim(), startDate=document.getElementById('profileStart').value||'';
+  if(startDate){const y=new Date(startDate+'T00:00:00').getFullYear();if(y!==Number(old.year)){alert('A data de início deve pertencer ao ano ativo ('+old.year+').');return;}}
+  try{await saveCloudProfile({name,startDate,year:Number(old.year)});renderProfile();home();alert('Configuração salva com sucesso.');}
+  catch(e){console.error(e);alert('Não foi possível salvar a configuração no banco.');}
+}
+async function startNewYear(){
+  const p=getProfile(), oldYear=Number(p.year||DEFAULT_YEAR), next=oldYear+1;
+  if(!confirm('Arquivar o ano '+oldYear+' e iniciar '+next+' com os dados financeiros zerados?\n\nO ano atual será guardado no histórico e não será apagado.'))return;
+  const oldData=JSON.parse(JSON.stringify(db));
+  const oldGoals=JSON.parse(JSON.stringify(getGoals()));
+  const newData=JSON.parse(JSON.stringify(initial));
+  const newGoals={annual:0,monthly:0};
+  try{
+    // Primeiro cria/salva o novo ciclo no banco. Só depois troca o ano ativo.
+    await cloudSaveData(newData,next,newGoals,null);
+    db=newData;
+    await saveCloudProfile({name:p.name||'',startDate:'',year:next});
+    setAppGoals(newGoals);
+    home();
+    alert('Novo ano iniciado. O ano '+oldYear+' foi arquivado no histórico.');
+  }catch(e){
+    console.error('Novo ano',e);
+    alert('Não foi possível iniciar o novo ano online. O ano atual foi mantido sem alterações.');
+  }
+}
+function renderHomeOnlineSummary(){
+  let income=0,expenses=0,paid=0,pending=0;
+  months.forEach(m=>{const s=stat(m);income+=s.income;expenses+=s.gastos;paid+=s.pagos;pending+=s.devendo;});
+  const balance=income-expenses;
+  const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=money(value)};
+  set('homeIncome',income);set('homeExpenses',expenses);set('homePaid',paid);set('homePending',pending);set('homeBalance',balance);
+  const card=document.getElementById('homeBalanceCard');
+  if(card)card.classList.toggle('balance-positive',balance>0),card.classList.toggle('balance-negative',balance<0);
+}
+function setHomeSync(ok,text){const el=document.getElementById('homeSync');if(!el)return;el.textContent=ok?'☁ '+(text||'Sincronizado'):'⚠ '+(text||'Erro ao sincronizar');el.classList.toggle('error',!ok)}
+function home(){
+  const b=document.getElementById('monthCards');
+  if(!b)return;
+  b.innerHTML='';
+  months.forEach((m,i)=>{
+    const e=document.createElement('div');
+    if(!isMonthActive(m)){
+      e.className='card month-locked';
+      e.innerHTML='<div class="monthnum">'+String(i+1).padStart(2,'0')+'</div><div class="monthtotal">'+m+'</div><div class="locklabel">🔒 BLOQUEADO</div>';
+      b.appendChild(e);return;
+    }
+    const st=stat(m), lucro=Number(st.lucro)||0;
+    const status=lucro>0?'month-positive':lucro<0?'month-negative':'month-zero';
+    e.className='card '+status;
+    e.innerHTML='<div class="monthnum">'+String(i+1).padStart(2,'0')+'</div><div class="monthtotal">'+m+'</div>'+(lucro!==0?'<div class="monthresult">'+money(lucro)+'</div>':'');
+    e.onclick=()=>goToMonthPage(m);b.appendChild(e);
+  });
+  renderHomeOnlineSummary();renderProfile();renderGoals();setNav('home');show('home');
+}
+function goToMonthPage(m){ if(!isMonthActive(m)){alert('Este mês está bloqueado porque é anterior ao início do seu controle.');return;} const map={'JANEIRO':'janeiro','FEVEREIRO':'fevereiro','MARÇO':'marco','ABRIL':'abril','MAIO':'maio','JUNHO':'junho','JULHO':'julho','AGOSTO':'agosto','SETEMBRO':'setembro','OUTUBRO':'outubro','NOVEMBRO':'novembro','DEZEMBRO':'dezembro'}; window.location.href='meses/'+map[m]+'.html'; }
+function monthsScreen(){home()}
+function openMonth(m){current=m;document.getElementById('mt').textContent=m;renderMonth();show('month');setNav('home')}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function escAttr(s){return esc(s).replace(/`/g,'&#096;')}
+function table(a,type){
+  a=Array.isArray(a)?a:[];
+  const key=type==='entry'?'entries':type;
+  return '<table><thead><tr><th>Descrição</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead><tbody>'+
+    (a.length?a.map(x=>{
+      const status=type==='entry'?'—':'<span class="pill '+(x.status==='PAGO'?'paid':'pending')+'">'+esc(x.status||'PENDENTE')+'</span>';
+      return '<tr><td>'+esc(x.desc)+'</td><td>'+money(x.value)+'</td><td>'+status+'</td><td><button class="edit" type="button" data-action="edit" data-type="'+escAttr(key)+'" data-id="'+escAttr(String(x.id))+'">✎ Editar</button></td></tr>';
+    }).join(''):'<tr><td colspan="4" class="muted">Nenhum lançamento cadastrado.</td></tr>')+
+    '</tbody></table>';
+}
+document.addEventListener('click',function(event){
+  const btn=event.target.closest('[data-action="edit"]');
+  if(!btn)return;
+  event.preventDefault();
+  editItem(btn.getAttribute('data-type'),btn.getAttribute('data-id'));
+});
+function renderMonth(){
+  const s=stat(current),d=db[current]||{};
+  document.getElementById('inc').textContent=money(s.income);
+  document.getElementById('fix').textContent=money(s.fixed);
+  document.getElementById('ext').textContent=money(s.extra);
+  document.getElementById('bal').textContent=money(s.lucro);
+  document.getElementById('fixed').innerHTML=table(d.fixed,'fixed');
+  document.getElementById('extra').innerHTML=table(d.extra,'extra');
+  document.getElementById('entries').innerHTML=table(d.entries,'entry');
+}
+let modalType='',modalId=null;
+
+function getModalArray(){
+  if(!db[current]) db[current]={entries:[],fixed:[],extra:[]};
+  if(!Array.isArray(db[current][modalType])) db[current][modalType]=[];
+  return db[current][modalType];
+}
+function openAdd(type){
+  modalType=type;modalId=null;
+  document.getElementById('modalTitle').textContent=type==='entries'?'Nova entrada':'Novo gasto';
+  document.getElementById('modalHint').textContent='Adicione um lançamento para '+current+'.';
+  document.getElementById('mDesc').value='';
+  document.getElementById('mValue').value='';
+  document.getElementById('mStatus').value='PAGO';
+  document.getElementById('mStatus').style.display=type==='entries'?'none':'block';
+  document.getElementById('modalDelete').style.display='none';
+  document.getElementById('modal').classList.add('show');
+  setTimeout(()=>document.getElementById('mDesc').focus(),50);
+}
+function editItem(type,id){
+  modalType=type;modalId=String(id);
+  const arr=getModalArray();
+  const item=arr.find(x=>String(x.id)===String(id));
+  if(!item){alert('Não foi possível localizar este lançamento. Atualize a página e tente novamente.');return}
+  document.getElementById('modalTitle').textContent='Editar lançamento';
+  document.getElementById('modalHint').textContent='Faça as alterações e use ✓ para aplicar ou 🗑 para excluir.';
+  document.getElementById('mDesc').value=item.desc||'';
+  document.getElementById('mValue').value=String(item.value??'').replace('.',',');
+  document.getElementById('mStatus').value=item.status||'PAGO';
+  document.getElementById('mStatus').style.display=type==='entries'?'none':'block';
+  document.getElementById('modalDelete').style.display='inline-flex';
+  document.getElementById('modal').classList.add('show');
+}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+async function saveModal(){
+  const desc=document.getElementById('mDesc').value.trim();
+  const value=val(document.getElementById('mValue').value);
+  if(!desc||!value){alert('Informe uma descrição e um valor maior que zero.');return}
+  const arr=getModalArray();
+  const status=document.getElementById('mStatus').value;
+  if(modalId!==null){
+    const index=arr.findIndex(x=>String(x.id)===String(modalId));
+    if(index<0){alert('Este lançamento não existe mais.');closeModal();renderMonth();return}
+    arr[index].desc=desc;
+    arr[index].value=value;
+    if(modalType!=='entries')arr[index].status=status;
+  }else{
+    arr.push({id:'v6_'+Date.now()+'_'+Math.random().toString(36).slice(2),desc,value,...(modalType!=='entries'?{status}:{} )});
+  }
+  try{await save();closeModal();renderMonth();}catch(e){alert('Não foi possível salvar online. O lançamento foi mantido na tela para nova tentativa.');}
+}
+async function deleteModalItem(){
+  if(modalId===null)return;
+  const arr=getModalArray();
+  const index=arr.findIndex(x=>String(x.id)===String(modalId));
+  if(index<0){alert('Este lançamento não existe mais.');closeModal();return}
+  const desc=arr[index].desc||'este lançamento';
+  if(!confirm('Excluir "'+desc+'"?'))return;
+  arr.splice(index,1);
+  try{await save();closeModal();renderMonth();}catch(e){alert('Não foi possível salvar online. A exclusão não foi concluída no servidor.');}
+}
+function toggleDebt(id){
+  const arr=db[current].debts||[];
+  const index=arr.findIndex(x=>String(x.id)===String(id));
+  if(index<0){alert('Dívida não encontrada.');return}
+  arr[index].status=arr[index].status==='PAGO'?'PENDENTE':'PAGO';
+  save();renderMonth();
+}
+const labels={meses:'Gastos por mês',gastos:'Gastos',entradas:'Entradas',salarios:'Salários / entradas',lucro:'Lucro / saldo'};
+function charts(){
+  const f=document.getElementById('filters');f.innerHTML='';
+  Object.entries(labels).forEach(([k,t])=>{let b=document.createElement('button');b.className='btn';b.textContent=t;b.onclick=()=>draw(k);f.appendChild(b)});
+  draw('gastos');setNav('charts');show('charts');
+}
+function draw(type){
+  [...document.getElementById('filters').children].forEach(b=>b.classList.toggle('primary',b.textContent===labels[type]));
+  const s=months.map(stat);
+  let d;
+  if(type==='entradas'||type==='salarios')d=s.map(x=>x.income);
+  else if(type==='lucro')d=s.map(x=>x.lucro);
+  else d=s.map(x=>x.gastos);
+  if(ch)ch.destroy();
+  const ctx=document.getElementById('chart');
+  ch=new Chart(ctx,{type:type==='lucro'?'line':'bar',
+    data:{labels:months,datasets:[{label:labels[type],data:d,borderWidth:2,tension:.35,fill:type==='lucro'}]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:true},tooltip:{callbacks:{label:c=>c.dataset.label+': '+money(c.raw)}}},
+      scales:{y:{beginAtZero:true,ticks:{callback:v=>money(v)}}}
+    }});
+}
+async function loadArchivedYears(){
+  const box=document.getElementById('historyYearList');
+  if(!box)return;
+  box.innerHTML='<div class="history-picker-empty">Carregando anos arquivados...</div>';
+  try{
+    const user=await getCurrentUser();
+    if(!user)return;
+    const active=Number(getProfile().year);
+    const q=await supabaseClient.from('annual_cycles').select('year').eq('user_id',user.id).order('year',{ascending:false});
+    if(q.error)throw q.error;
+    const years=(q.data||[]).map(x=>Number(x.year)).filter(y=>y!==active);
+    if(!years.length){box.innerHTML='<div class="history-picker-empty">Nenhum ano arquivado ainda.</div>';return;}
+    box.innerHTML=years.map(y=>'<button class="history-year-btn" onclick="selectArchivedYear('+y+')">📅 '+y+'<br><span style="font-size:10px;color:#718096;font-weight:700">Ano arquivado · somente leitura</span></button>').join('');
+  }catch(e){console.error('Histórico',e);box.innerHTML='<div class="history-picker-empty">Não foi possível carregar os anos arquivados.</div>';}
+}
+function openHistoryPicker(){
+  const m=document.getElementById('historyPicker');
+  if(m){m.classList.add('show');loadArchivedYears();}
+}
+function closeHistoryPicker(){const m=document.getElementById('historyPicker');if(m)m.classList.remove('show');}
+function selectArchivedYear(year){closeHistoryPicker();viewArchivedYear(year);}
+function statFrom(data,m){
+  const d=(data&&data[m])||{entries:[],fixed:[],extra:[]};
+  const income=sum(d.entries), fixed=sum(d.fixed), extra=sum(d.extra), gastos=fixed+extra;
+  const pagos=sum((d.fixed||[]).filter(x=>x.status==='PAGO'))+sum((d.extra||[]).filter(x=>x.status==='PAGO'));
+  const devendo=sum((d.fixed||[]).filter(x=>x.status==='DEVENDO'))+sum((d.extra||[]).filter(x=>x.status==='DEVENDO'));
+  return {income,fixed,extra,pagos,devendo,gastos,lucro:income-gastos,economia:income-pagos};
+}
+let archiveChart=null;
+const archivePointLabels={id:'archivePointLabels',afterDatasetsDraw(chart){
+  if(chart.config.type!=='line')return;
+  const ctx=chart.ctx;
+  chart.data.datasets.forEach((ds,di)=>{
+    const meta=chart.getDatasetMeta(di), values=ds.data||[];
+    ctx.save();ctx.font='700 11px Inter, Segoe UI, Arial, sans-serif';ctx.textAlign='center';ctx.textBaseline='bottom';
+    values.forEach((value,i)=>{const pt=meta.data[i];if(!pt)return;const n=Number(value)||0;const text=money(n);const w=ctx.measureText(text).width+12,h=21;let y=pt.y-9;if(y-h<2)y=pt.y+29;const x=pt.x;const color=ds.label==='Gastos'?'#dc2626':ds.label==='Meta'?'#7c3aed':'#2563eb';const bg=ds.label==='Gastos'?'rgba(254,226,226,.96)':ds.label==='Meta'?'rgba(237,233,254,.96)':'rgba(219,234,254,.96)';const border=ds.label==='Gastos'?'#fecaca':ds.label==='Meta'?'#ddd6fe':'#bfdbfe';const left=x-w/2,top=y-h,r=7;ctx.fillStyle=bg;ctx.beginPath();ctx.moveTo(left+r,top);ctx.arcTo(left+w,top,left+w,top+h,r);ctx.arcTo(left+w,top+h,left,top+h,r);ctx.arcTo(left,top+h,left,top,r);ctx.arcTo(left,top,left+w,top,r);ctx.closePath();ctx.fill();ctx.strokeStyle=border;ctx.lineWidth=1;ctx.stroke();ctx.fillStyle=color;ctx.fillText(text,x,y-4);});ctx.restore();
+  });
+}};
+function drawArchiveChart(data,goals){
+  const labels13=[...months.map(m=>m.slice(0,3)), 'TOTAL'];
+  const stats=months.map(m=>statFrom(data,m));
+  const totalIncome=stats.reduce((t,s)=>t+s.income,0), totalExpenses=stats.reduce((t,s)=>t+s.gastos,0);
+  const monthlyGoal=Number(goals?.monthly)||0, annualGoal=Number(goals?.annual)||0;
+  const revenue=stats.map(s=>s.income).concat(totalIncome), expenses=stats.map(s=>s.gastos).concat(totalExpenses), meta=stats.map(()=>monthlyGoal).concat(annualGoal);
+  if(archiveChart)archiveChart.destroy();
+  const canvas=document.getElementById('archiveChart');if(!canvas)return;
+  archiveChart=new Chart(canvas,{type:'line',data:{labels:labels13,datasets:[
+    {label:'Receitas',data:revenue,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.08)',pointBackgroundColor:'#2563eb',pointBorderColor:'#fff',pointRadius:5,pointHoverRadius:7,borderWidth:3,tension:.28,fill:false},
+    {label:'Gastos',data:expenses,borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,.06)',pointBackgroundColor:'#ef4444',pointBorderColor:'#fff',pointRadius:5,pointHoverRadius:7,borderWidth:3,tension:.28,fill:false},
+    {label:'Meta',data:meta,borderColor:'#7c3aed',backgroundColor:'rgba(124,58,237,.04)',pointBackgroundColor:'#7c3aed',pointBorderColor:'#fff',pointRadius:4,pointHoverRadius:6,borderWidth:2,borderDash:[7,5],tension:0,fill:false}
+  ]},plugins:[archivePointLabels],options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:42,right:18,left:8,bottom:8}},plugins:{legend:{display:true,labels:{usePointStyle:true,pointStyle:'line',padding:22,font:{weight:'700'}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+money(c.raw)}}},scales:{x:{grid:{color:'rgba(148,163,184,.20)'},ticks:{font:{weight:'600'},color:'#47658a'}},y:{beginAtZero:true,ticks:{display:false},grid:{color:'rgba(148,163,184,.20)'}}}}});
+}
+async function viewArchivedYear(year){
+  const modal=document.getElementById('archiveModal');
+  const sumBox=document.getElementById('archiveSummary'), monthsBox=document.getElementById('archiveMonths'), title=document.getElementById('archiveYear');
+  if(!modal||!sumBox||!monthsBox)return;
+  title.textContent=String(year); sumBox.innerHTML='<div class="history-empty">Carregando dados online...</div>'; monthsBox.innerHTML=''; if(archiveChart){archiveChart.destroy();archiveChart=null;} modal.classList.add('show');
+  try{
+    const remote=await cloudLoadData(initial,year);
+    const data=remote.data||blankDataFromInitial(initial), goals=remote.goals||{annual:0,monthly:0};
+    let income=0,gastos=0,pagos=0,devendo=0;
+    months.forEach(m=>{const s=statFrom(data,m);income+=s.income;gastos+=s.gastos;pagos+=s.pagos;devendo+=s.devendo;});
+    const lucro=income-gastos;
+    const box=(label,value,cls)=>'<div class="card"><div class="label">'+label+'</div><div class="num '+(cls||'')+'">'+money(value)+'</div></div>';
+    sumBox.innerHTML=box('ENTRADAS / SALÁRIOS',income,'green')+box('GASTOS TOTAIS',gastos,'red')+box('GASTOS PAGOS',pagos,'red')+box('GASTOS NÃO PAGOS',devendo,'orange')+box('LUCRO / SALDO',lucro,lucro>0?'green':lucro<0?'red':'');
+    drawArchiveChart(data,goals);
+    monthsBox.innerHTML=months.map((m,i)=>{const s=statFrom(data,m);const cls=s.lucro>0?'green':s.lucro<0?'red':'';return '<div class="archive-month"><div class="archive-month-name">'+String(i+1).padStart(2,'0')+' · '+m+'</div><div class="archive-month-values">Entradas: <strong>'+money(s.income)+'</strong><br>Gastos: <strong>'+money(s.gastos)+'</strong><br>Pago: '+money(s.pagos)+'<br>Não pago: '+money(s.devendo)+'<br><span class="'+cls+'">Saldo: <strong>'+money(s.lucro)+'</strong></span></div></div>';}).join('');
+  }catch(e){console.error('Ano arquivado',e);sumBox.innerHTML='<div class="history-empty">Não foi possível carregar este ano.</div>';monthsBox.innerHTML='';}
+}
+function closeArchive(){const m=document.getElementById('archiveModal');if(m)m.classList.remove('show');if(archiveChart){archiveChart.destroy();archiveChart=null;}}
+
+async function bootCloud(){
+  try{
+    setHomeSync(true,'Conectando...');
+    const session=await requireAuth();
+    if(!session)return;
+    const p=await loadCloudProfile();
+    const remote=await cloudBoot(initial,p.year);
+    db=remote.data;
+    setAppGoals(remote.goals);
+    cloudLoaded=true;
+    setHomeSync(true,'Sincronizado');
+    renderProfile();renderGoals();home();
+  }catch(e){
+    console.error('Cloud boot',e);
+    cloudLoaded=false;
+    setHomeSync(false,'Não foi possível sincronizar');
+    home();
+  }
+}
+
+bootCloud();
+
+</script><footer class="project-footer">project by tecnicoreis.messias@gmail.com</footer></body></html>

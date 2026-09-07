@@ -1,0 +1,401 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Controle Financeiro — Maio</title><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#182033;--muted:#697386;--line:#e5e7eb;--p:#2563eb;--g:#16a34a;--r:#dc2626;--o:#d97706;--shadow:0 10px 30px rgba(15,23,42,.08)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}.nav{max-width:1180px;margin:auto;padding:15px 22px;display:flex;justify-content:space-between;align-items:center;gap:18px}.brand{font-size:21px;font-weight:900}.brand small{display:block;color:var(--muted);font-size:12px;font-weight:500}.navlinks{display:flex;gap:7px;align-items:center}.navlinks .btn{border-color:transparent;background:transparent}.navlinks .btn:hover{background:#eef2ff}.navlinks .btn.active{background:#eef2ff;color:var(--p)}
+main{max-width:1180px;margin:auto;padding:24px 22px}.screen{display:none}.active{display:block}.hero{min-height:calc(100vh - 80px);display:block}.home{text-align:center;width:100%;max-width:1180px;margin:auto}.home .monthcards{text-align:left;margin-top:25px}.summarycards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:28px;text-align:left}.summarycards .card{min-height:110px}.summarycards .num{font-size:25px}.summarytitle{margin-top:34px;font-size:18px;font-weight:950;text-align:left}.summaryhint{text-align:left;margin-top:4px}.label{color:var(--muted);font-size:13px;font-weight:700}.total{font-size:clamp(45px,9vw,84px);font-weight:950;letter-spacing:-3px;margin:8px 0 25px}.hint{color:var(--muted);margin-bottom:25px}
+.actions,.filters,.add{display:flex;gap:10px;flex-wrap:wrap}.actions{justify-content:center}.btn{padding:11px 15px;border-radius:11px;border:1px solid var(--line);background:#fff;font-weight:800;cursor:pointer}.primary{background:var(--p);color:#fff;border-color:var(--p)}.dark{background:#182033;color:#fff}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.title{font-size:30px;font-weight:950}.back{border:0;background:none;color:var(--p);font-weight:800;cursor:pointer}
+.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:13px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:var(--shadow);transition:transform .16s,box-shadow .16s}.card:hover{transform:translateY(-2px);box-shadow:0 14px 35px rgba(15,23,42,.11)}.num{font-size:22px;font-weight:900;margin-top:7px}.blue{color:var(--p)}.green{color:var(--g)}.red{color:var(--r)}.orange{color:var(--o)}.muted{font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}h3{margin:0 0 4px}
+table{width:100%;border-collapse:collapse;margin-top:12px}th,td{padding:9px 6px;border-bottom:1px solid var(--line);font-size:13px;text-align:left}th{font-size:10px;color:var(--muted);text-transform:uppercase}td:last-child,th:last-child{text-align:right}.pill{border-radius:99px;padding:4px 8px;font-size:10px;font-weight:800}.paid{background:#dcfce7;color:#166534}.pending{background:#fee2e2;color:#991b1b}.del{border:0;background:none;color:var(--r);font-weight:800;cursor:pointer}
+.add{margin-top:13px}.add input,.add select{min-width:0;flex:1;border:1px solid var(--line);border-radius:10px;padding:10px}.monthcards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.monthcards .card{cursor:pointer;text-align:left;position:relative;overflow:hidden}.monthcards .card:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--p)}.monthcards .monthnum{font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.08em}.monthcards .monthtotal{font-size:24px;font-weight:950;margin-top:5px}.monthcards .monthmeta{display:flex;justify-content:space-between;gap:8px;margin-top:12px;font-size:11px;color:var(--muted)}.monthcards .monthsummary{margin-top:14px;border-top:1px solid var(--line);padding-top:10px;display:grid;gap:6px}.monthcards .monthsummary>div{display:flex;justify-content:space-between;gap:10px;font-size:12px}.monthcards .monthsummary span{color:var(--muted)}.monthcards .monthsummary strong{font-size:12px}.monthcards .monthsummary div:first-child strong{color:#15803d}.monthcards .monthsummary div:not(:first-child) strong{color:#b91c1c}@media(max-width:900px){.monthcards{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.monthcards{grid-template-columns:repeat(2,1fr)}}
+.chart{height:520px}.chart canvas{height:430px!important}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0}.section-actions{display:flex;gap:7px;flex-wrap:wrap}.edit{border:1px solid #dbeafe;background:#eff6ff;color:#1d4ed8;border-radius:8px;padding:7px 11px;font-weight:800;cursor:pointer}.edit:hover{background:#dbeafe}.iconbtn{width:42px;height:42px;border:0;border-radius:12px;font-size:20px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}.apply{background:#dcfce7;color:#15803d}.remove{background:#fee2e2;color:#dc2626}.pay{border:1px solid #bbf7d0;background:#f0fdf4;color:#15803d;border-radius:8px;padding:6px 9px;font-weight:800;cursor:pointer}.del{border:0;background:none;color:var(--r);font-weight:800;cursor:pointer}.bulkbar{display:none;align-items:center;gap:8px;margin:0 0 10px;padding:9px 11px;background:#f8fafc;border:1px solid var(--line);border-radius:10px}.bulkbar.show{display:flex}.bulkbar strong{font-size:12px}.bulkcheck{width:17px;height:17px;cursor:pointer}.bulkdelete{border:0;background:#fee2e2;color:#dc2626;border-radius:8px;padding:7px 10px;font-weight:800;cursor:pointer}.bulkstatus{border:1px solid #bfdbfe;background:#eff6ff;color:#1d4ed8;border-radius:8px;padding:7px 10px;font-weight:800;cursor:pointer}.bulkstatus.due{border-color:#fecaca;background:#fef2f2;color:#dc2626}.bulkstatus:hover{filter:brightness(.98)}.bulkcancel{border:1px solid var(--line);background:#fff;color:#475569;border-radius:8px;padding:7px 10px;font-weight:800;cursor:pointer}.selectcell{width:36px;text-align:center}.editmode-row{background:#f8fafc}.modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;padding:18px;z-index:20}.modal.show{display:flex}.modalbox{width:min(520px,100%);background:#fff;border-radius:20px;padding:22px;box-shadow:0 25px 70px rgba(15,23,42,.25)}.modalgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.modalgrid .full{grid-column:1/-1}.modalbox input,.modalbox select{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px}.modalactions{display:flex;justify-content:flex-end;gap:9px;margin-top:15px}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.monthcards{grid-template-columns:repeat(2,1fr)}.summarycards{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
+@media(max-width:520px){main{padding:14px}.cards,.monthcards{grid-template-columns:1fr}.title{font-size:24px}.chart{height:400px}.chart canvas{height:320px!important}}
+.month-top-cards{grid-template-columns:repeat(5,1fr);align-items:stretch}.pie-panel{min-height:205px}.pie-layout{display:grid;grid-template-columns:180px 1fr;gap:18px;align-items:center;margin-top:2px}.pie-wrap{height:150px;position:relative}.pie-wrap canvas{width:100%!important;height:150px!important}.pie-legend{display:grid;gap:0;font-size:12px;color:var(--muted)}.pie-legend>div{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.pie-legend>div:last-child{border-bottom:0}.pie-legend span{display:inline-flex;align-items:center;gap:7px}.pie-legend strong{font-size:12px;color:var(--ink);white-space:nowrap}.dot{width:9px;height:9px;border-radius:50%;display:inline-block}.income-dot{background:#16a34a}.paid-dot{background:#2563eb}.due-dot{background:#dc2626}@media(max-width:1100px){.month-top-cards{grid-template-columns:repeat(2,1fr)}}@media(max-width:900px){.pie-layout{grid-template-columns:150px 1fr}.pie-wrap,.pie-wrap canvas{height:135px!important}}@media(max-width:700px){.month-top-cards{grid-template-columns:1fr 1fr}.pie-layout{grid-template-columns:1fr}.pie-wrap,.pie-wrap canvas{height:170px!important}.pie-panel{grid-column:1/-1}}.goal-month{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}.goal-month-head{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;flex-wrap:wrap}.goal-month-title{font-size:18px;font-weight:950}.goal-month-values{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:15px}.goal-kpi{background:#f8fafc;border-radius:12px;padding:12px}.goal-kpi .label{font-size:10px}.goal-kpi .value{font-size:18px;font-weight:900;margin-top:4px}.goal-progress{margin-top:15px}.goal-progress-top{display:flex;justify-content:space-between;gap:12px;font-size:12px}.progress{height:10px;background:#eef2f7;border-radius:99px;overflow:hidden;margin-top:7px}.progress>span{display:block;height:100%;background:var(--p);border-radius:99px;width:0}.goal-status{margin-top:10px;font-weight:900;font-size:13px}.goal-status.ok{color:var(--g)}.goal-status.no{color:var(--r)}@media(max-width:700px){.goal-month-values{grid-template-columns:1fr}}
+/* VISUAL PRO — identidade compartilhada com o Início */
+:root{--bg:#f4f7fb;--card:#fff;--ink:#17243b;--muted:#6b7a90;--line:#e3eaf3;--p:#1769e8;--g:#16a34a;--r:#dc3b4b;--o:#d97706;--nav:#0b315b;--nav2:#123f70;--shadow:0 8px 26px rgba(22,53,91,.08)}
+body{background:linear-gradient(180deg,#edf4fb 0,#f7f9fc 170px,var(--bg) 100%);color:var(--ink)}
+.app-header{background:linear-gradient(115deg,var(--nav),var(--nav2));border:0;box-shadow:0 8px 28px rgba(11,49,91,.18);position:sticky;top:0;z-index:30}
+.app-header .nav{max-width:1180px;padding:17px 22px;min-height:74px}
+.brand-wrap{display:flex;align-items:center;gap:12px}.brand-mark{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);display:grid;place-items:center;color:#fff;font-size:22px}.app-header .brand{color:#fff;font-size:20px;letter-spacing:-.3px}.app-header .brand small{color:rgba(255,255,255,.72);font-size:11px;margin-top:2px}.header-right{display:flex;align-items:center;gap:9px}.user-mini,.year-mini{color:#fff;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.13);padding:9px 12px;border-radius:12px;font-size:12px;font-weight:800}.year-mini{background:rgba(255,255,255,.14)}
+main{max-width:1180px;padding:28px 22px 42px}.head{margin-bottom:20px}.title{font-size:30px;letter-spacing:-.7px}.back{padding:10px 13px;border-radius:10px;background:#fff;border:1px solid var(--line);box-shadow:0 4px 14px rgba(22,53,91,.05)}
+.cards{gap:14px}.card,.panel,.goal-month{border-color:#e0e8f2;box-shadow:0 7px 24px rgba(22,53,91,.07);border-radius:16px}.card:hover{box-shadow:0 12px 30px rgba(22,53,91,.11)}
+.month-top-cards .card{padding:18px}.month-top-cards .label{letter-spacing:.02em}.month-top-cards .num{font-size:23px;margin-top:8px}
+.grid{gap:18px}.panel{padding:19px}.toolbar{margin:0 0 10px}.toolbar h3{font-size:17px}.btn{border-color:#dce5ef;box-shadow:0 3px 10px rgba(22,53,91,.04);transition:.15s}.btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(22,53,91,.08)}.primary,.btn.primary{background:linear-gradient(135deg,#1769e8,#2d7df0);border-color:#1769e8}
+table{margin-top:14px}th{color:#7b8ba0;letter-spacing:.04em}th,td{padding:11px 7px;border-bottom-color:#edf1f5}.edit{background:#eef5ff;border-color:#d7e6fb;border-radius:9px}.edit:hover{background:#e1efff}.modalbox{border:1px solid #e2e9f2;box-shadow:0 25px 70px rgba(11,49,91,.22)}
+.goal-month{background:linear-gradient(135deg,#fff,#f8fbff);padding:19px}.goal-kpi{background:#f5f8fc;border:1px solid #e8eef5}.progress{background:#e8eef5}.progress>span{background:linear-gradient(90deg,#1769e8,#39a7f5)}
+.pie-panel{background:linear-gradient(135deg,#fff,#f9fbfe)}
+@media(max-width:650px){.app-header .nav{padding:13px 14px}.app-header .brand{font-size:17px}.brand-mark{width:36px;height:36px}.user-mini{display:none}.header-right{gap:6px}.year-mini{padding:8px 10px}main{padding:18px 14px 30px}.title{font-size:25px}}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../auth.js"></script><style>.project-footer{width:100%;text-align:center;padding:22px 16px 18px;color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:.2px}.project-footer::first-letter{text-transform:lowercase}</style></head><body><script>requireAuth();</script>
+<header class="app-header"><div class="nav"><div class="brand-wrap"><div class="brand-mark">▣</div><div class="brand">Meu Controle Financeiro<small>Organização hoje, tranquilidade amanhã</small></div></div><div class="header-right"><div class="user-mini">👤 <span id="headerUser">Olá</span></div><div class="year-mini">▣ <span id="headerYear">Ano</span></div><button class="btn" onclick="signOut()">Sair</button></div></div></header>
+<main>
+
+<section id="month" class="screen active"><div class="head"><div><div id="mt" class="title"></div><div class="muted">Adicione ou exclua gastos fixos, gastos extras e salários/entradas.</div></div><button class="back" onclick="window.location.href='../index.html'">← Início</button></div>
+<div class="cards month-top-cards"><div class="card"><div class="label">ENTRADAS / SALÁRIOS</div><div id="inc" class="num green"></div></div><div class="card"><div class="label">GASTOS TOTAIS</div><div id="gastosTotal" class="num red"></div></div><div class="card"><div class="label">GASTOS PAGOS</div><div id="gastosPagos" class="num blue"></div></div><div class="card"><div class="label">GASTOS DEVENDO</div><div id="gastosDevendo" class="num red"></div></div><div class="card"><div class="label">LUCRO / SALDO</div><div id="bal" class="num"></div></div></div>
+<div id="monthGoal" class="goal-month"></div>
+<div class="grid"><div class="panel"><div class="toolbar"><div><h3>Gastos fixos</h3><div class="muted">Contas recorrentes.</div></div><div class="section-actions"><button class="btn primary" onclick="toggleEditMode('fixed')">✎ Editar</button></div></div><div id="bulk-fixed" class="bulkbar"><input id="select-all-fixed" class="bulkcheck" type="checkbox" onchange="toggleSelectAll('fixed',this.checked)"><strong id="count-fixed">0 selecionado(s)</strong><button class="btn primary" onclick="openAdd('fixed')">＋ Adicionar</button><button class="bulkstatus" onclick="setSelectedStatus('fixed','PAGO')">✓ Marcar como PAGO</button><button class="bulkstatus due" onclick="setSelectedStatus('fixed','DEVENDO')">! Marcar como DEVENDO</button><button class="bulkdelete" onclick="deleteSelected('fixed')">🗑 Excluir selecionados</button><button class="bulkcancel" onclick="toggleEditMode('fixed')">Cancelar</button></div><div id="fixed"></div></div>
+<div class="panel"><div class="toolbar"><div><h3>Gastos extras</h3><div class="muted">Gastos não recorrentes.</div></div><div class="section-actions"><button class="btn primary" onclick="toggleEditMode('extra')">✎ Editar</button></div></div><div id="bulk-extra" class="bulkbar"><input id="select-all-extra" class="bulkcheck" type="checkbox" onchange="toggleSelectAll('extra',this.checked)"><strong id="count-extra">0 selecionado(s)</strong><button class="btn primary" onclick="openAdd('extra')">＋ Adicionar</button><button class="bulkstatus" onclick="setSelectedStatus('extra','PAGO')">✓ Marcar como PAGO</button><button class="bulkstatus due" onclick="setSelectedStatus('extra','DEVENDO')">! Marcar como DEVENDO</button><button class="bulkdelete" onclick="deleteSelected('extra')">🗑 Excluir selecionados</button><button class="bulkcancel" onclick="toggleEditMode('extra')">Cancelar</button></div><div id="extra"></div></div>
+<div class="panel"><div class="toolbar"><div><h3>Salários / entradas</h3><div class="muted">Todas as entradas do mês.</div></div><div class="section-actions"><button class="btn primary" onclick="toggleEditMode('entries')">✎ Editar</button></div></div><div class="bulkbar" id="bulk-entries"><input id="select-all-entries" class="bulkcheck" type="checkbox" onchange="toggleSelectAll('entries',this.checked)"><strong id="count-entries">0 selecionado(s)</strong><button class="btn primary" onclick="openAdd('entries')">＋ Adicionar</button><button class="bulkdelete" onclick="deleteSelected('entries')">🗑 Excluir selecionados</button><button class="bulkcancel" onclick="toggleEditMode('entries')">Cancelar</button></div><div id="entries"></div></div><div class="panel pie-panel"><div class="toolbar"><div><h3>Visão do mês</h3><div class="muted">Distribuição das entradas e gastos.</div></div></div><div class="pie-layout"><div class="pie-wrap"><canvas id="monthPie"></canvas></div><div class="pie-legend"><div><span><i class="dot income-dot"></i>Entradas / Salário</span><strong id="pieIncome"></strong></div><div><span><i class="dot paid-dot"></i>Gastos Pagos</span><strong id="piePaid"></strong></div><div><span><i class="dot due-dot"></i>Gastos Devendo</span><strong id="pieDue"></strong></div></div></div></div>
+</section>
+
+</main>
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()"><div class="modalbox"><h2 id="modalTitle" style="margin:0 0 4px">Novo lançamento</h2><div id="modalHint" class="muted">Preencha os dados.</div><div class="modalgrid" style="margin-top:15px"><input id="mDesc" class="full" placeholder="Descrição / origem"><input id="mValue" placeholder="Valor"><select id="mStatus"><option>PAGO</option><option>DEVENDO</option></select></div><div class="modalactions"><button class="btn" onclick="closeModal()">Cancelar</button><button id="modalDelete" class="iconbtn remove" title="Excluir lançamento" aria-label="Excluir lançamento" onclick="deleteModalItem()">🗑</button><button class="iconbtn apply" title="Aplicar alterações" aria-label="Aplicar alterações" onclick="saveModal()">✓</button></div></div></div>
+<script>
+const initial={"JANEIRO":{"fixed":[{"id":"f-JANEIRO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-JANEIRO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-JANEIRO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-JANEIRO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-JANEIRO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-JANEIRO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-JANEIRO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-JANEIRO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-JANEIRO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-JANEIRO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-JANEIRO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-JANEIRO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-JANEIRO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-JANEIRO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-JANEIRO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-JANEIRO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-JANEIRO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-JANEIRO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"FEVEREIRO":{"fixed":[{"id":"f-FEVEREIRO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-FEVEREIRO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-FEVEREIRO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-FEVEREIRO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-FEVEREIRO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-FEVEREIRO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-FEVEREIRO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"MARÇO":{"fixed":[{"id":"f-MARÇO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-MARÇO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-MARÇO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-MARÇO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-MARÇO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-MARÇO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-MARÇO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-MARÇO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-MARÇO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-MARÇO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-MARÇO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-MARÇO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-MARÇO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-MARÇO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-MARÇO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-MARÇO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-MARÇO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-MARÇO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"ABRIL":{"fixed":[{"id":"f-ABRIL-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-ABRIL-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-ABRIL-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-ABRIL-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-ABRIL-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-ABRIL-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-ABRIL-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-ABRIL-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-ABRIL-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-ABRIL-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-ABRIL-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-ABRIL-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-ABRIL-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-ABRIL-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-ABRIL-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-ABRIL-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-ABRIL-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-ABRIL-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"MAIO":{"fixed":[{"id":"f-MAIO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-MAIO-10","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-MAIO-11","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-MAIO-12","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-MAIO-13","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-MAIO-14","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-MAIO-15","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-MAIO-16","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-MAIO-17","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-MAIO-18","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-MAIO-19","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-MAIO-20","desc":"ACADEMIA","value":0,"status":"PAGO"},{"id":"f-MAIO-21","desc":"DENTISTA ","value":0,"status":"PAGO"}],"extra":[{"id":"e-MAIO-28","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"e-MAIO-29","desc":"ROUPAS","value":0,"status":"DEVENDO"},{"id":"e-MAIO-30","desc":"CARTÃO DE CREDITO","value":0,"status":"PAGO"},{"id":"e-MAIO-32","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"e-MAIO-33","desc":"FAZER O CABELO","value":0,"status":"PAGO"},{"id":"e-MAIO-34","desc":"THATY","value":0,"status":"PAGO"},{"id":"e-MAIO-35","desc":"DENIS","value":0,"status":"PAGO"},{"id":"e-MAIO-36","desc":"MANU","value":0,"status":"PAGO"},{"id":"e-MAIO-37","desc":"GASOLINA","value":0,"status":"PAGO"},{"id":"e-MAIO-38","desc":"LAZER","value":0,"status":"PAGO"}],"entries":[{"id":"i-MAIO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"JUNHO":{"fixed":[{"id":"f-JUNHO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-JUNHO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-JUNHO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-JUNHO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-JUNHO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-JUNHO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-JUNHO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-JUNHO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-JUNHO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-JUNHO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-JUNHO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-JUNHO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-JUNHO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-JUNHO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-JUNHO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-JUNHO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-JUNHO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-JUNHO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"JULHO":{"fixed":[{"id":"f-JULHO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-JULHO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-JULHO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-JULHO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-JULHO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-JULHO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-JULHO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-JULHO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-JULHO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-JULHO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-JULHO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-JULHO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-JULHO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-JULHO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-JULHO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-JULHO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-JULHO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-JULHO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"AGOSTO":{"fixed":[{"id":"f-AGOSTO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-AGOSTO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-AGOSTO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-AGOSTO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-AGOSTO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-AGOSTO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-AGOSTO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-AGOSTO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-AGOSTO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-AGOSTO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-AGOSTO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-AGOSTO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-AGOSTO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-AGOSTO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-AGOSTO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-AGOSTO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-AGOSTO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-AGOSTO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"SETEMBRO":{"fixed":[{"id":"f-SETEMBRO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-15","desc":"EXPLICADORA","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-SETEMBRO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-SETEMBRO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-SETEMBRO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-SETEMBRO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-SETEMBRO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-SETEMBRO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"OUTUBRO":{"fixed":[{"id":"f-OUTUBRO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-OUTUBRO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-OUTUBRO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-OUTUBRO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-OUTUBRO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-OUTUBRO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-OUTUBRO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"NOVEMBRO":{"fixed":[{"id":"f-NOVEMBRO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-NOVEMBRO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-NOVEMBRO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-NOVEMBRO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-NOVEMBRO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-NOVEMBRO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-NOVEMBRO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]},"DEZEMBRO":{"fixed":[{"id":"f-DEZEMBRO-9","desc":"LUZ","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-10","desc":"GAS","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-11","desc":"INTERNET","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-12","desc":"CONDOMINIO","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-13","desc":"ESCOLA","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-14","desc":"TRASNPORTE ESCOLAR","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-15","desc":"BALÉ","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-16","desc":"FINACIAMENTO","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-17","desc":"PLANOS DE CELULAR","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-18","desc":"SEGURO DO CARRO","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-19","desc":"MERCADO","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-20","desc":"CORTE DE CABELO","value":0,"status":"PAGO"},{"id":"f-DEZEMBRO-21","desc":"FAZER O CABELO","value":0,"status":"PAGO"}],"extra":[{"id":"e-DEZEMBRO-28","desc":"LANCHES","value":0,"status":"PAGO"},{"id":"e-DEZEMBRO-29","desc":"ROUPAS","value":0,"status":"PAGO"},{"id":"e-DEZEMBRO-30","desc":"UTENSILIOS PARA CASA","value":0,"status":"PAGO"},{"id":"e-DEZEMBRO-31","desc":"CREME DE CABELO","value":0,"status":"PAGO"}],"entries":[{"id":"i-DEZEMBRO-21","desc":"SOMA DO CAPITAL  ","value":0}],"debts":[]}};const months=Object.keys(initial);let db=blankDataFromInitial(initial);let cloudLoaded=false;let current='MAIO',ch=null;
+const money=n=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(n)||0);
+const val=x=>{x=(x||'').toString().replace(/\./g,'').replace(',','.');return Number(x.replace(/[^\d.-]/g,''))||0};
+const sum=a=>(a||[]).reduce((t,x)=>t+Number(x.value||0),0);
+
+function stat(m){
+  const d=db[m]||{entries:[],fixed:[],extra:[]};
+  const income=sum(d.entries);
+  const fixed=sum(d.fixed);
+  const extra=sum(d.extra);
+  const gastos=fixed+extra;
+  const pagos=sum((d.fixed||[]).filter(x=>x.status==='PAGO'))+sum((d.extra||[]).filter(x=>x.status==='PAGO'));
+  const devendo=sum((d.fixed||[]).filter(x=>x.status==='DEVENDO'))+sum((d.extra||[]).filter(x=>x.status==='DEVENDO'));
+  const lucro=income-gastos;
+  const economia=income-pagos;
+  return {income,fixed,extra,pagos,devendo,gastos,total:gastos,lucro,economia};
+}
+const DEFAULT_YEAR=2024;
+function getProfile(){return getAppProfile();}
+function setSyncStatus(text,ok=true){const el=document.getElementById('syncStatus');if(el){el.textContent=text;el.style.color=ok?'#16a34a':'#dc2626';}}
+function getGoals(){return getAppGoals();}
+function annualReal(){return months.reduce((t,m)=>t+stat(m).lucro,0)}
+function renderMonthGoal(s){
+  const el=document.getElementById('monthGoal'); if(!el)return;
+  const g=getGoals(), target=Number(g.monthly)||0, real=s.economia, pct=target>0?(real/target)*100:0, safe=Math.max(0,Math.min(100,pct));
+  if(!target){el.innerHTML='<div class="goal-month-head"><div><div class="goal-month-title">🎯 Meta de economia — '+current+'</div><div class="muted">Defina a meta mensal na página Início para acompanhar se o mês foi atingido.</div></div></div>';return}
+  const ok=real>=target;
+  el.innerHTML='<div class="goal-month-head"><div><div class="goal-month-title">🎯 Meta de economia — '+current+'</div><div class="muted">Comparamos a meta com o lucro/saldo real do mês: entradas menos gastos pagos.</div></div><div class="goal-status '+(ok?'ok':'no')+'">'+(ok?'🟢 META ATINGIDA':'🔴 META NÃO ATINGIDA')+'</div></div><div class="goal-month-values"><div class="goal-kpi"><div class="label">META MENSAL</div><div class="value">'+money(target)+'</div></div><div class="goal-kpi"><div class="label">SALDO DO MÊS</div><div class="value '+(ok?'green':'red')+'">'+money(real)+'</div></div><div class="goal-kpi"><div class="label">DESEMPENHO</div><div class="value">'+pct.toFixed(1).replace('.',',')+'%</div></div></div><div class="goal-progress"><div class="goal-progress-top"><span>Progresso da meta</span><strong>'+money(real)+' / '+money(target)+'</strong></div><div class="progress"><span style="width:'+safe+'%"></span></div><div class="muted" style="margin-top:8px">'+(ok?'Você superou a meta em '+money(real-target)+'.':'Faltam '+money(target-real)+' para atingir a meta.')+'</div></div>';
+}
+
+async function save(){
+  if(cloudLoaded){
+    setSyncStatus('☁ Salvando...',true);
+    try{
+      const p=getProfile();
+      await cloudSaveData(db,p.year,getGoals(),[current]);
+      setSyncStatus('☁ Salvo online',true);
+    }catch(e){
+      console.error('Cloud save',e);
+      setSyncStatus('⚠ Erro ao salvar online',false);
+      throw e;
+    }
+  }
+}
+async function saveMonths(list){
+  const unique=[...new Set((list||[]).filter(Boolean))];
+  if(!unique.length)return save();
+  if(cloudLoaded){
+    setSyncStatus('☁ Salvando...',true);
+    const p=getProfile();
+    try{await cloudSaveData(db,p.year,getGoals(),unique);setSyncStatus('☁ Salvo online',true);}catch(e){setSyncStatus('⚠ Erro ao salvar online',false);throw e;}
+  }
+}
+function setNav(active){
+  ['home','charts'].forEach(x=>{const el=document.getElementById('nav'+x);if(el)el.classList.toggle('active',x===active)});
+}
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active')}
+function home(){
+  const b=document.getElementById('monthCards');
+  b.innerHTML='';
+  months.forEach((m,i)=>{
+    const s=stat(m),d=db[m]||{};
+    const e=document.createElement('div');e.className='card';
+    e.innerHTML='<div class="monthnum">'+String(i+1).padStart(2,'0')+'</div><div class="monthtotal">'+m+'</div><div class="monthsummary"><div><span>Entradas</span><strong>'+money(s.income)+'</strong></div><div><span>Gastos Fixos</span><strong>'+money(s.fixed)+'</strong></div><div><span>Gastos Extras</span><strong>'+money(s.extra)+'</strong></div></div>';
+    e.onclick=()=>openMonth(m);b.appendChild(e);
+  });
+  setNav('home');show('home');
+}
+
+function monthsScreen(){home()}
+function openMonth(m){current=m;document.getElementById('mt').textContent=m;renderMonth();show('month');setNav('home')}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function escAttr(s){return esc(s).replace(/`/g,'&#096;')}
+function isEditing(type){return !!window.bulkEditMode?.[type]}
+function selectedIds(type){return Array.from(document.querySelectorAll('.bulk-check[data-type="'+type+'"]:checked')).map(x=>x.getAttribute('data-id'))}
+function updateBulkBar(type){
+  const ids=selectedIds(type), el=document.getElementById('count-'+type), bar=document.getElementById('bulk-'+type);
+  if(el)el.textContent=ids.length+' selecionado(s)';
+  const all=document.getElementById('select-all-'+type);
+  const arr=getModalArrayFor(type);
+  if(all){all.checked=arr.length>0&&ids.length===arr.length;all.indeterminate=ids.length>0&&ids.length<arr.length}
+  if(bar)bar.classList.toggle('show',isEditing(type));
+}
+function getModalArrayFor(type){
+  if(!db[current])db[current]={entries:[],fixed:[],extra:[],debts:[]};
+  const key=type==='entries'?'entries':type;
+  if(!Array.isArray(db[current][key]))db[current][key]=[];
+  return db[current][key];
+}
+function toggleEditMode(type){
+  window.bulkEditMode=window.bulkEditMode||{};
+  window.bulkEditMode[type]=!isEditing(type);
+  if(!window.bulkEditMode[type]){
+    document.querySelectorAll('.bulk-check[data-type="'+type+'"]').forEach(x=>x.checked=false);
+    const all=document.getElementById('select-all-'+type);if(all){all.checked=false;all.indeterminate=false}
+  }
+  renderMonth();
+}
+function toggleSelectAll(type,checked){
+  document.querySelectorAll('.bulk-check[data-type="'+type+'"]').forEach(x=>x.checked=checked);
+  updateBulkBar(type);
+}
+function table(a,type){
+  a=Array.isArray(a)?a:[];
+  const key=type==='entry'?'entries':type;
+  const edit=isEditing(key);
+  return '<table><thead><tr>'+(edit?'<th class="selectcell">✓</th>':'')+'<th>Descrição</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead><tbody>'+
+    (a.length?a.map(x=>{
+      const status=type==='entry'?'—':'<span class="pill '+(x.status==='PAGO'?'paid':'pending')+'">'+esc(x.status||'PENDENTE')+'</span>';
+      return '<tr class="'+(edit?'editmode-row':'')+'">'+(edit?'<td class="selectcell"><input class="bulk-check" type="checkbox" data-type="'+escAttr(key)+'" data-id="'+escAttr(String(x.id))+'" onchange="updateBulkBar(\''+escAttr(key)+'\')"></td>':'')+'<td>'+esc(x.desc)+'</td><td>'+money(x.value)+'</td><td>'+status+'</td><td><button class="edit" type="button" data-action="edit" data-type="'+escAttr(key)+'" data-id="'+escAttr(String(x.id))+'">✎ Editar</button></td></tr>';
+    }).join(''):'<tr><td colspan="'+(edit?5:4)+'" class="muted">Nenhum lançamento cadastrado.</td></tr>')+
+    '</tbody></table>';
+}
+document.addEventListener('click',function(event){
+  const btn=event.target.closest('[data-action="edit"]');
+  if(!btn)return;
+  event.preventDefault();
+  editItem(btn.getAttribute('data-type'),btn.getAttribute('data-id'));
+});
+async function setSelectedStatus(type,status){
+  const ids=selectedIds(type);
+  if(!ids.length){alert('Selecione pelo menos um item para alterar.');return}
+  const arr=getModalArrayFor(type);
+  const chosen=arr.filter(x=>ids.includes(String(x.id)));
+  if(!chosen.length)return;
+  if(!confirm('Marcar '+chosen.length+' item(ns) como '+status+'?'))return;
+  if(type==='fixed'){
+    // Gastos fixos são recorrentes: a alteração vale deste mês em diante,
+    // preservando os status dos meses anteriores.
+    const recs=new Set(chosen.map(x=>String(x.recurringId||x.id)));
+    const pos=months.indexOf(current);
+    for(let i=pos;i<months.length;i++){
+      const mm=months[i]; if(!db[mm]||!Array.isArray(db[mm].fixed))continue;
+      db[mm].fixed.forEach(x=>{if(recs.has(String(x.recurringId||x.id)))x.status=status});
+    }
+  }else{
+    chosen.forEach(x=>x.status=status);
+  }
+  try{
+    const affected=type==='fixed'?months.slice(months.indexOf(current)):[current];
+    await saveMonths(affected);
+    window.bulkEditMode[type]=false;
+    renderMonth();
+  }catch(e){alert('Não foi possível salvar a alteração online. Os itens foram mantidos na tela para nova tentativa.');}
+}
+async function deleteSelected(type){
+  const ids=selectedIds(type);
+  if(!ids.length){alert('Selecione pelo menos um item para excluir.');return}
+  const arr=getModalArrayFor(type);
+  const items=arr.filter(x=>ids.includes(String(x.id)));
+  if(!items.length)return;
+  if(!confirm('Excluir '+items.length+' item(ns) selecionado(s)?'))return;
+  if(type==='fixed'){
+    // Gastos fixos são recorrentes: cada item selecionado é encerrado neste mês e nos próximos.
+    const recs=new Set(items.map(x=>String(x.recurringId||x.id)));
+    const pos=months.indexOf(current);
+    for(let i=pos;i<months.length;i++){
+      const mm=months[i]; if(!db[mm]||!Array.isArray(db[mm].fixed))continue;
+      db[mm].fixed=db[mm].fixed.filter(x=>!recs.has(String(x.recurringId||x.id)));
+    }
+  }else{
+    db[current][type==='entries'?'entries':type]=arr.filter(x=>!ids.includes(String(x.id)));
+  }
+  try{
+    const affected=type==='fixed'?months.slice(months.indexOf(current)):[current];
+    await saveMonths(affected);
+    window.bulkEditMode[type]=false;
+    renderMonth();
+  }catch(e){alert('Não foi possível concluir a exclusão online. Os itens foram mantidos na tela.');}
+}
+function renderMonth(){
+  const s=stat(current),d=db[current]||{};
+  renderMonthGoal(s);
+  document.getElementById('inc').textContent=money(s.income);
+  document.getElementById('gastosTotal').textContent=money(s.gastos);
+  document.getElementById('gastosPagos').textContent=money(s.pagos);
+  document.getElementById('gastosDevendo').textContent=money(s.devendo);
+  const balEl=document.getElementById('bal');
+  balEl.textContent=money(s.lucro);
+  balEl.classList.remove('green','red');
+  if(s.lucro>0)balEl.classList.add('green'); else if(s.lucro<0)balEl.classList.add('red');
+  drawMonthPie(s);
+  document.getElementById('fixed').innerHTML=table(d.fixed,'fixed');
+  document.getElementById('extra').innerHTML=table(d.extra,'extra');
+  document.getElementById('entries').innerHTML=table(d.entries,'entry');
+  ['fixed','extra','entries'].forEach(updateBulkBar);
+}
+function drawMonthPie(s){
+  const canvas=document.getElementById('monthPie');
+  if(!canvas)return;
+  if(window.monthPieChart)window.monthPieChart.destroy();
+  const pi=document.getElementById('pieIncome'), pp=document.getElementById('piePaid'), pd=document.getElementById('pieDue');
+  if(pi)pi.textContent=money(s.income);
+  if(pp)pp.textContent=money(s.pagos);
+  if(pd)pd.textContent=money(s.devendo);
+  window.monthPieChart=new Chart(canvas,{type:'pie',data:{labels:['Entradas / Salário','Gastos Pagos','Gastos Devendo'],datasets:[{data:[s.income,s.pagos,s.devendo],backgroundColor:['#16a34a','#2563eb','#dc2626'],borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+': '+money(c.raw)}}}}});
+}
+let modalType='',modalId=null; window.bulkEditMode={fixed:false,extra:false,entries:false};
+
+function getModalArray(){
+  if(!db[current]) db[current]={entries:[],fixed:[],extra:[]};
+  if(!Array.isArray(db[current][modalType])) db[current][modalType]=[];
+  return db[current][modalType];
+}
+function openAdd(type){
+  modalType=type;modalId=null;
+  document.getElementById('modalTitle').textContent=type==='entries'?'Nova entrada':'Novo gasto';
+  document.getElementById('modalHint').textContent='Adicione um lançamento para '+current+'.';
+  document.getElementById('mDesc').value='';
+  document.getElementById('mValue').value='';
+  document.getElementById('mStatus').value='PAGO';
+  document.getElementById('mStatus').style.display=type==='entries'?'none':'block';
+  document.getElementById('modalDelete').style.display='none';
+  document.getElementById('modal').classList.add('show');
+  setTimeout(()=>document.getElementById('mDesc').focus(),50);
+}
+function editItem(type,id){
+  modalType=type;modalId=String(id);
+  const arr=getModalArray();
+  const item=arr.find(x=>String(x.id)===String(id));
+  if(!item){alert('Não foi possível localizar este lançamento. Atualize a página e tente novamente.');return}
+  document.getElementById('modalTitle').textContent='Editar lançamento';
+  document.getElementById('modalHint').textContent='Faça as alterações e use ✓ para aplicar ou 🗑 para excluir.';
+  document.getElementById('mDesc').value=item.desc||'';
+  document.getElementById('mValue').value=String(item.value??'').replace('.',',');
+  document.getElementById('mStatus').value=item.status||'PAGO';
+  document.getElementById('mStatus').style.display=type==='entries'?'none':'block';
+  document.getElementById('modalDelete').style.display='inline-flex';
+  document.getElementById('modal').classList.add('show');
+}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+async function saveModal(){
+  const desc=document.getElementById('mDesc').value.trim();
+  const value=val(document.getElementById('mValue').value);
+  if(!desc||!value){alert('Informe uma descrição e um valor maior que zero.');return}
+  const arr=getModalArray();
+  const status=document.getElementById('mStatus').value;
+  if(modalId!==null){
+    const index=arr.findIndex(x=>String(x.id)===String(modalId));
+    if(index<0){alert('Este lançamento não existe mais.');closeModal();renderMonth();return}
+    if(modalType==='fixed'){
+      // Gasto fixo é recorrente: edições valem deste mês em diante,
+      // preservando integralmente os meses anteriores.
+      const target=arr[index], recurrence=String(target.recurringId||target.id), pos=months.indexOf(current);
+      for(let i=pos;i<months.length;i++){
+        const mm=months[i]; if(!db[mm]||!Array.isArray(db[mm].fixed))continue;
+        db[mm].fixed.forEach(x=>{if(String(x.recurringId||x.id)===recurrence){x.desc=desc;x.value=value;x.status=status;}});
+      }
+    }else{
+      arr[index].desc=desc;
+      arr[index].value=value;
+      if(modalType!=='entries')arr[index].status=status;
+    }
+  }else{
+    const newId='v6_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    arr.push({id:newId,desc,value,...(modalType!=='entries'?{status}:{} ),...(modalType==='fixed'?{recurringId:newId}:{})});
+    // Gasto fixo é recorrente: ao criar, replica para os meses seguintes,
+    // sem alterar o histórico dos meses anteriores.
+    if(modalType==='fixed'){
+      const pos=months.indexOf(current);
+      for(let i=pos+1;i<months.length;i++){
+        const mm=months[i];
+        if(!db[mm]) db[mm]={entries:[],fixed:[],extra:[],debts:[]};
+        if(!Array.isArray(db[mm].fixed)) db[mm].fixed=[];
+        if(!db[mm].fixed.some(x=>String(x.recurringId||'')===newId)){
+          db[mm].fixed.push({id:'rec_'+newId+'_'+i,recurringId:newId,desc,value,status});
+        }
+      }
+    }
+  }
+  try{
+    const affected=modalType==='fixed'?months.slice(months.indexOf(current)): [current];
+    await saveMonths(affected);
+    closeModal();renderMonth();
+  }catch(e){alert('Não foi possível salvar online. O lançamento foi mantido na tela para nova tentativa.');}
+}
+async function deleteModalItem(){
+  if(modalId===null)return;
+  const arr=getModalArray();
+  const index=arr.findIndex(x=>String(x.id)===String(modalId));
+  if(index<0){alert('Este lançamento não existe mais.');closeModal();return}
+  const desc=arr[index].desc||'este lançamento';
+  if(!confirm('Excluir "'+desc+'"?'))return;
+  if(modalType==='fixed'){
+    // Encerrar o gasto fixo: remove deste mês e dos próximos,
+    // preservando integralmente os meses anteriores.
+    const target=arr[index];
+    const recurrence=String(target.recurringId||target.id);
+    const pos=months.indexOf(current);
+    for(let i=pos;i<months.length;i++){
+      const mm=months[i];
+      if(!db[mm]||!Array.isArray(db[mm].fixed))continue;
+      db[mm].fixed=db[mm].fixed.filter(x=>String(x.recurringId||x.id)!==recurrence);
+    }
+  }else{
+    arr.splice(index,1);
+  }
+  try{
+    const affected=modalType==='fixed'?months.slice(months.indexOf(current)): [current];
+    await saveMonths(affected);closeModal();renderMonth();
+  }catch(e){alert('Não foi possível salvar online. A exclusão não foi concluída no servidor.');}
+}
+function toggleDebt(id){
+  const arr=db[current].debts||[];
+  const index=arr.findIndex(x=>String(x.id)===String(id));
+  if(index<0){alert('Dívida não encontrada.');return}
+  arr[index].status=arr[index].status==='PAGO'?'PENDENTE':'PAGO';
+  save();renderMonth();
+}
+const labels={meses:'Gastos por mês',gastos:'Gastos',entradas:'Entradas',salarios:'Salários / entradas',lucro:'Lucro / saldo'};
+function charts(){
+  const f=document.getElementById('filters');f.innerHTML='';
+  Object.entries(labels).forEach(([k,t])=>{let b=document.createElement('button');b.className='btn';b.textContent=t;b.onclick=()=>draw(k);f.appendChild(b)});
+  draw('gastos');setNav('charts');show('charts');
+}
+function draw(type){
+  [...document.getElementById('filters').children].forEach(b=>b.classList.toggle('primary',b.textContent===labels[type]));
+  const s=months.map(stat);
+  let d;
+  if(type==='entradas'||type==='salarios')d=s.map(x=>x.income);
+  else if(type==='lucro')d=s.map(x=>x.lucro);
+  else d=s.map(x=>x.gastos);
+  if(ch)ch.destroy();
+  const ctx=document.getElementById('chart');
+  ch=new Chart(ctx,{type:type==='lucro'?'line':'bar',
+    data:{labels:months,datasets:[{label:labels[type],data:d,borderWidth:2,tension:.35,fill:type==='lucro'}]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:true},tooltip:{callbacks:{label:c=>c.dataset.label+': '+money(c.raw)}}},
+      scales:{y:{beginAtZero:true,ticks:{callback:v=>money(v)}}}
+    }});
+}
+renderMonth();
+
+async function bootCloudMonth(){
+  try{
+    const session=await requireAuth();
+    if(!session)return;
+    const p=await loadCloudProfile();
+    const remote=await cloudBoot(initial,p.year);
+    db=remote.data;
+    setAppGoals(remote.goals);
+    cloudLoaded=true; setSyncStatus('☁ Dados online carregados',true); renderMonth();
+  }catch(e){
+    console.error('Cloud boot month',e);
+    setSyncStatus('⚠ Não foi possível conectar ao salvamento online',false);
+    renderMonth();
+  }
+}
+bootCloudMonth();
+
+</script>
+<script>
+(async function(){try{await requireAuth();const p=await loadCloudProfile();const n=p.name||'';const u=document.getElementById('headerUser');const yr=document.getElementById('headerYear');if(u)u.textContent=n?('Olá, '+n):'Meu controle';if(yr)yr.textContent='Ano: '+p.year;}catch(e){}})();
+</script>
+<footer class="project-footer">project by tecnicoreis.messias@gmail.com</footer></body></html>

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Configuração inicial — Meu Controle Financeiro</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#182033;--muted:#64748b;--line:#e2e8f0;--p:#2563eb;--shadow:0 24px 70px rgba(15,23,42,.13)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(135deg,#eef4ff,#f8fafc);font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--ink);display:flex;flex-direction:column;align-items:center;padding:28px 18px 0;text-align:center}
+.wrap{width:min(560px,100%);margin:auto;display:flex;align-items:center;justify-content:center}.box{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:34px;box-shadow:var(--shadow)}
+.brand{text-align:center;font-size:27px;font-weight:950}.eyebrow{text-align:center;color:var(--p);font-size:11px;font-weight:900;letter-spacing:1.4px;margin-top:10px}.sub{text-align:center;color:var(--muted);line-height:1.55;margin:10px 0 28px}
+.step{display:flex;align-items:center;justify-content:center;gap:12px;background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:22px}.step b{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#dbeafe;color:#1d4ed8;font-size:13px}.step span{font-size:13px;color:#475569;font-weight:700}
+label{display:block;text-align:center;font-size:12px;font-weight:850;margin:16px 0 7px}input,select{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:12px;font-size:14px;outline:none;background:#fff;color:var(--ink);text-align:center;text-align-last:center}input:focus,select:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.hint{font-size:11px;color:#94a3b8;margin-top:7px}.primary{width:100%;margin-top:24px;padding:14px;border:0;border-radius:12px;background:var(--p);color:#fff;font-weight:900;cursor:pointer}.primary:disabled{opacity:.6;cursor:wait}.msg{margin-top:14px;padding:11px;border-radius:10px;font-size:13px;display:none}.msg.show{display:block}.error{background:#fee2e2;color:#991b1b}.ok{background:#dcfce7;color:#166534}
+.project-footer{width:100%;margin-top:auto;text-align:center;padding:22px 16px 14px;color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:.2px}
+</style></head><body><div class="wrap"><div class="box">
+<div class="brand">Meu Controle Financeiro</div><div class="eyebrow">CONFIGURAÇÃO INICIAL</div>
+<div class="sub">Antes de começar, informe seu nome e escolha o mês em que você começou a usar o controle.</div>
+<div class="step"><b>1</b><span>Essas informações serão usadas para personalizar sua área inicial.</span></div>
+<form id="setupForm"><label for="name">Seu nome</label><input id="name" type="text" autocomplete="name" placeholder="Digite seu nome" required>
+<label for="month">Mês de início</label><select id="month" required><option value="">Selecione o mês</option><option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option><option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option><option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option></select>
+<div class="hint">Os meses anteriores ao início ficarão bloqueados e não serão considerados como meses perdidos.</div>
+<button class="primary" id="save">✓ Começar meu controle</button></form><div id="msg" class="msg"></div>
+</div></div><footer class="project-footer">project by tecnicoreis.messias@gmail.com</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="auth.js"></script>
+<script>
+const MONTHS=['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+function show(t,ok=false){const e=document.getElementById('msg');e.textContent=t;e.className='msg '+(t?(ok?'show ok':'show error'):'')}
+let currentUser=null; (async()=>{const session=await requireAuth();if(!session)return;currentUser=session.user;const meta=currentUser.user_metadata||{};document.getElementById('name').value=meta.name||'';})();
+document.getElementById('setupForm').addEventListener('submit',async e=>{e.preventDefault();const session=await requireAuth();if(!session)return;currentUser=session.user;const user=currentUser;const name=document.getElementById('name').value.trim();const month=Number(document.getElementById('month').value);if(!name||!month)return show('Preencha seu nome e escolha o mês de início.');const year=new Date().getFullYear();
+// A configuração inicial é persistida diretamente no Supabase.
+const startDate=`${year}-${String(month).padStart(2,'0')}-01`;
+// Etapa 1: salva a configuração também no Supabase, vinculada ao usuário autenticado.
+const {error}=await supabaseClient.from('profiles').upsert({id:user.id,name,start_date:startDate,active_year:year},{onConflict:'id'});
+if(error){console.error(error);return show('Não foi possível salvar sua configuração no banco. Tente novamente.');}
+setAppProfile({name,startDate,year});
+show('Configuração salva com sucesso. Abrindo seu controle...',true);setTimeout(()=>location.href='index.html',500);
+});
+</script></body></html>

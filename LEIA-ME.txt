@@ -1,0 +1,14 @@
+MEU CONTROLE FINANCEIRO — ETAPA 2.1
+
+Fonte oficial dos dados: Supabase.
+
+- Perfil, ano ativo e data de início: Supabase / profiles
+- Metas mensal e anual: Supabase / annual_cycles
+- Meses: Supabase / monthly_records
+- Gastos: Supabase / expenses
+- Entradas: Supabase / incomes
+- Histórico anual: Supabase / annual_cycles + dados relacionados
+
+O localStorage é utilizado somente para manter a identificação local do usuário autenticado durante a navegação. Ele não é usado como banco, backup ou fonte alternativa dos dados financeiros.
+
+A área de dívidas da planilha original não é utilizada nos cálculos.
